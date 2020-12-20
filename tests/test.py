@@ -142,7 +142,7 @@ class TestObterPosicoesLivres(unittest.TestCase):
 
 
 class TestObterVetor(unittest.TestCase):
-    def test_obter_vetor(self):
+    def test_obter_vetor_1(self):
         data = target.tuplo_para_tabuleiro(((0, 1, -1), (-0, 1, -1), (1, 0, -1)))
 
         result = tuple(
@@ -151,7 +151,7 @@ class TestObterVetor(unittest.TestCase):
 
         self.assertEqual(("[ ]", "[ ]", "[X]"))
 
-    def test_obter_vetor(self):
+    def test_obter_vetor_2(self):
         data = target.tuplo_para_tabuleiro(((0, 1, -1), (-0, 1, -1), (1, 0, -1)))
 
         result = tuple(
