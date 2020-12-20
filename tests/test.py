@@ -7,15 +7,6 @@ from io import StringIO
 target = importlib.import_module(sys.argv[1])
 
 
-class SomeTest(unittest.TestCase):
-    def test_example(self):
-        """
-        Example test
-        """
-        result = target.some_function()
-        self.assertEqual(result, True)
-
-
 class TestPosicoesIguais(unittest.TestCase):
     def test_posicoes_iguais(self):
         """
@@ -73,7 +64,8 @@ class TestTabuleiroParaStr(unittest.TestCase):
 
 class TestPecasIguais(unittest.TestCase):
     def test_pecas_iguais(self):
-        result = target.pecas_iguais(target.cria_peca("X"), target.cria_peca("O"))
+        result = target.pecas_iguais(
+            target.cria_peca("X"), target.cria_peca("O"))
 
         self.assertEqual(result, False)
 
@@ -97,7 +89,8 @@ class TestColocaPeca(unittest.TestCase):
         data2 = target.cria_peca("X")
         data3 = target.cria_posicao("a", "1")
 
-        result = target.tabuleiro_para_str(target.coloca_peca(data1, data2, data3))
+        result = target.tabuleiro_para_str(
+            target.coloca_peca(data1, data2, data3))
 
         self.assertEqual(
             result,
@@ -113,7 +106,8 @@ class TestMovePeca(unittest.TestCase):
         data4 = target.coloca_peca(data1, data2, data3)
         data5 = target.cria_posicao("b", "1")
 
-        result = target.tabuleiro_para_str(target.move_peca(data4, data3, data5))
+        result = target.tabuleiro_para_str(
+            target.move_peca(data4, data3, data5))
 
         self.assertEqual(
             result,
@@ -123,7 +117,8 @@ class TestMovePeca(unittest.TestCase):
 
 class TestObterGanhador(unittest.TestCase):
     def test_obter_ganhador(self):
-        data = target.tuplo_para_tabuleiro(((0, 1, -1), (-0, 1, -1), (1, 0, -1)))
+        data = target.tuplo_para_tabuleiro(
+            ((0, 1, -1), (-0, 1, -1), (1, 0, -1)))
 
         result = target.peca_para_str(target.obter_ganhador(data))
 
@@ -132,7 +127,8 @@ class TestObterGanhador(unittest.TestCase):
 
 class TestObterPosicoesLivres(unittest.TestCase):
     def test_obter_posicoes_livres(self):
-        data = target.tuplo_para_tabuleiro(((0, 1, -1), (-0, 1, -1), (1, 0, -1)))
+        data = target.tuplo_para_tabuleiro(
+            ((0, 1, -1), (-0, 1, -1), (1, 0, -1)))
 
         result = tuple(
             target.posicao_para_str(p) for p in target.obter_posicoes_livres(data)
@@ -143,22 +139,24 @@ class TestObterPosicoesLivres(unittest.TestCase):
 
 class TestObterVetor(unittest.TestCase):
     def test_obter_vetor_1(self):
-        data = target.tuplo_para_tabuleiro(((0, 1, -1), (-0, 1, -1), (1, 0, -1)))
+        data = target.tuplo_para_tabuleiro(
+            ((0, 1, -1), (-0, 1, -1), (1, 0, -1)))
 
         result = tuple(
             target.peca_para_str(peca) for peca in target.obter_vetor(data, "a")
         )
 
-        self.assertEqual(result,("[ ]", "[ ]", "[X]"))
+        self.assertEqual(result, ("[ ]", "[ ]", "[X]"))
 
     def test_obter_vetor_2(self):
-        data = target.tuplo_para_tabuleiro(((0, 1, -1), (-0, 1, -1), (1, 0, -1)))
+        data = target.tuplo_para_tabuleiro(
+            ((0, 1, -1), (-0, 1, -1), (1, 0, -1)))
 
         result = tuple(
             target.peca_para_str(peca) for peca in target.obter_vetor(data, "2")
         )
 
-        self.assertEqual(result,("[ ]", "[X]", "[O]"))
+        self.assertEqual(result, ("[ ]", "[X]", "[O]"))
 
 
 if __name__ == '__main__':
