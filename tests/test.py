@@ -32,9 +32,9 @@ class TestPosicoesIguais(unittest.TestCase):
 class TestPosicaoParaStr(unittest.TestCase):
     def test_posicao_para_str(self):
         """
-        posicao_para_str(cria_posicao("b", "3")) = 'a2'
+        posicao_para_str(cria_posicao("a", "2")) = 'a2'
         """
-        data = target.cria_posicao("b", "3")
+        data = target.cria_posicao("a", "2")
 
         result = target.posicao_para_str(data)
 
@@ -47,7 +47,7 @@ class TestObterPosicaoesAdjacentes(unittest.TestCase):
         posicao = cria_posicao('b', '3')
         tuple(posicao_para_str(p) for p in obter_posicoes_adjacentes(posicao)) = ('b2', 'a3', 'c3')
         """
-        data1 = target.cria_posicao("a", "2")
+        data1 = target.cria_posicao("b", "3")
 
         result = tuple(
             target.posicao_para_str(p) for p in target.obter_posicoes_adjacentes(data1)
@@ -149,7 +149,7 @@ class TestObterVetor(unittest.TestCase):
             target.peca_para_str(peca) for peca in target.obter_vetor(data, "a")
         )
 
-        self.assertEqual(("[ ]", "[ ]", "[X]"))
+        self.assertEqual(result,("[ ]", "[ ]", "[X]"))
 
     def test_obter_vetor_2(self):
         data = target.tuplo_para_tabuleiro(((0, 1, -1), (-0, 1, -1), (1, 0, -1)))
@@ -158,7 +158,7 @@ class TestObterVetor(unittest.TestCase):
             target.peca_para_str(peca) for peca in target.obter_vetor(data, "2")
         )
 
-        self.assertEqual(("[ ]", "[X]", "[O]"))
+        self.assertEqual(result,("[ ]", "[X]", "[O]"))
 
 
 if __name__ == '__main__':
