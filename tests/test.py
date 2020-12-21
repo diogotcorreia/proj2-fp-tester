@@ -134,7 +134,7 @@ class TestTADPosicao(unittest.TestCase):
 class TestTADPeca(unittest.TestCase):
     def setUp(self):
         self.pieces = list('XO ')
-        self.invalid_pieces = (True, False, 0, 4, 1.45, 'x', 'o', '\t', '\u200B', {
+        self.invalid_pieces = (True, False, 4, 1.45, 'x', 'o', '\t', '\u200B', {
                                'foo': 'bar'}, ['foo', 'bar'], ('foo', 'bar'))
 
     def test_cria_peca_fail(self):
@@ -142,7 +142,7 @@ class TestTADPeca(unittest.TestCase):
         Testa a verificação dos argumentos no cria_peca.
         Todos os casos devem retornar ValueError.
         """
-        for piece in self.invalid_pieces:
+        for piece in self.invalid_pieces + (0, -1, 1):
             with self.assertRaises(ValueError, msg='ValueError not raised for {}'.format(piece)) as ctx:
                 target.cria_peca(piece)
             self.assertEqual(
