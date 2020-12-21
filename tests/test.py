@@ -40,7 +40,7 @@ class TestTADPosicao(unittest.TestCase):
         """
         Testa a criação de uma cópia de todas as posições possíveis.
         Relembra-se que a cópia não pode ser o mesmo objeto que o original,
-        isto é, "original == copia" tem de retornar False.
+        isto é, "original is copia" tem de retornar False.
         """
         for case in self.positions:
             original = target.cria_posicao(case[0], case[1])
@@ -163,7 +163,7 @@ class TestTADPeca(unittest.TestCase):
         """
         Testa a criação de uma cópia de todas as pecas possíveis.
         Relembra-se que a cópia não pode ser o mesmo objeto que o original,
-        isto é, "original == copia" tem de retornar False.
+        isto é, "original is copia" tem de retornar False.
         """
         for piece in self.pieces:
             original = target.cria_peca(piece)
