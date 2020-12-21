@@ -7,7 +7,7 @@ from io import StringIO
 target = importlib.import_module(sys.argv[1])
 
 
-class TestTADPosicaoBasicOps(unittest.TestCase):
+class TestTADPosicao(unittest.TestCase):
     def setUp(self):
         self.positions = tuple((x, y) for x in 'abc' for y in '123')
 
@@ -104,20 +104,31 @@ class TestTADPosicaoBasicOps(unittest.TestCase):
             pos = target.cria_posicao(case[0], case[1])
             self.assertEqual(target.posicao_para_str(pos), case[0] + case[1])
 
-
-class TestObterPosicaoesAdjacentes(unittest.TestCase):
     def test_obter_posicoes_adjacentes(self):
         """
-        posicao = cria_posicao('b', '3')
-        tuple(posicao_para_str(p) for p in obter_posicoes_adjacentes(posicao)) = ('b2', 'a3', 'c3')
+        Testa obter_posicoes_adjacentes para todas as posições válidas possíveis
         """
-        data1 = target.cria_posicao("b", "3")
 
-        result = tuple(
-            target.posicao_para_str(p) for p in target.obter_posicoes_adjacentes(data1)
+        result = (
+            (('b', '1'), ('a', '2'), ('b', '2')),
+            (('a', '1'), ('b', '2'), ('a', '3')),
+            (('a', '2'), ('b', '2'), ('b', '3')),
+            (('a', '1'), ('c', '1'), ('b', '2')),
+            (('a', '1'), ('b', '1'), ('c', '1'), ('a', '2'),
+             ('c', '2'), ('a', '3'), ('b', '3'), ('c', '3')),
+            (('b', '2'), ('a', '3'), ('c', '3')),
+            (('b', '1'), ('b', '2'), ('c', '2')),
+            (('c', '1'), ('b', '2'), ('c', '3')),
+            (('b', '2'), ('c', '2'), ('b', '3'))
         )
 
-        self.assertEqual(result, ("b2", "a3", "c3"))
+        for i in range(len(self.positions)):
+            c, l = self.positions[i]
+            pos = target.cria_posicao(c, l)
+            correctResult = tuple(target.cria_posicao(
+                x[0], x[1]) for x in result[i])
+            self.assertEqual(
+                correctResult, target.obter_posicoes_adjacentes(pos))
 
 
 class TestTabuleiroParaStr(unittest.TestCase):
