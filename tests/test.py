@@ -7,29 +7,102 @@ from io import StringIO
 target = importlib.import_module(sys.argv[1])
 
 
-class TestPosicoesIguais(unittest.TestCase):
-    def test_posicoes_iguais(self):
+class TestTADPosicaoBasicOps(unittest.TestCase):
+    def setUp(self):
+        self.positions = tuple((x, y) for x in 'abc' for y in '123')
+
+    def test_cria_posicao_fail(self):
         """
-        posicoes_iguais(criar_posicao('a','2'),criar_posicao('b','3')) = False
+        Testa a verificação dos argumentos.
+        Todos os casos devem retornar ValueError.
         """
-        data1 = target.cria_posicao("a", "2")
-        data2 = target.cria_posicao("b", "3")
+        testcases = (('a', '4'), ('d', '2'), (True, False),
+                     ('c', 2), ('aa', '-2'), ('b', 3.0), ('c', '11'))
 
-        result = target.posicoes_iguais(data1, data2)
+        for case in testcases:
+            with self.assertRaises(ValueError) as ctx:
+                target.cria_posicao(case[0], case[1])
+            self.assertEqual(
+                'cria_posicao: argumentos invalidos', str(ctx.exception))
 
-        self.assertEqual(result, False)
+    def test_cria_posicao_success(self):
+        """
+        Testa a criação dos argumentos sem retornar ValueError.
+        Todas as 9 posições possiveis são testadas.
+        """
+        for case in self.positions:
+            try:
+                target.cria_posicao(case[0], case[1])
+            except ValueError:
+                self.fail("cria_posicao raised ValueError when it shouldn't")
 
+    def test_cria_copia_posicao(self):
+        """
+        Testa a criação de uma cópia de todas as posições possíveis.
+        Relembra-se que a cópia não pode ser o mesmo objeto que o original,
+        isto é, "original == copia" tem de retornar False.
+        """
+        for case in self.positions:
+            original = target.cria_posicao(case[0], case[1])
+            copy = target.cria_copia_posicao(original)
+            self.assertIsNot(original, copy)
+            self.assertTrue(target.posicoes_iguais(original, copy))
 
-class TestPosicaoParaStr(unittest.TestCase):
+    def test_obter_pos_c(self):
+        """
+        Testa obter_pos_c para todas as posições possíveis
+        """
+        for case in self.positions:
+            pos = target.cria_posicao(case[0], case[1])
+            self.assertEqual(case[0], target.obter_pos_c(pos))
+
+    def test_obter_pos_l(self):
+        """
+        Testa obter_pos_l para todas as posições possíveis
+        """
+        for case in self.positions:
+            pos = target.cria_posicao(case[0], case[1])
+            self.assertEqual(case[1], target.obter_pos_l(pos))
+
+    def test_posicoes_iguais_success(self):
+        """
+        Testa posicoes_iguais para todas as posições válidas possíveis
+        """
+        for case in self.positions:
+            pos1 = target.cria_posicao(case[0], case[1])
+            pos2 = target.cria_posicao(case[0], case[1])
+            self.assertTrue(target.posicoes_iguais(pos1, pos2))
+
+    def test_posicoes_iguais_fail(self):
+        """
+        Testa posicoes_iguais para posições diferentes
+        """
+        pos1 = target.cria_posicao('a', '2')
+        pos2 = target.cria_posicao('b', '3')
+        self.assertFalse(target.posicoes_iguais(pos1, pos2))
+
+    def test_eh_posicao_success(self):
+        """
+        Testa eh_posicao para todas as posições válidas possíveis
+        """
+        for case in self.positions:
+            pos1 = target.cria_posicao(case[0], case[1])
+            self.assertTrue(target.eh_posicao(pos1))
+
+    def test_eh_posicao_fail(self):
+        """
+        Testa eh_posicao para objetos que não sejam posições
+        """
+        for case in (True, False, 34, 'fail', 43.543, {'c': 'a', 'l': 4}, ['z', '4'], ('d', '1')):
+            self.assertFalse(target.eh_posicao(case))
+
     def test_posicao_para_str(self):
         """
-        posicao_para_str(cria_posicao("a", "2")) = 'a2'
+        Testa posicao_para_str para todas as posições válidas possíveis
         """
-        data = target.cria_posicao("a", "2")
-
-        result = target.posicao_para_str(data)
-
-        self.assertEqual(result, "a2")
+        for case in self.positions:
+            pos = target.cria_posicao(case[0], case[1])
+            self.assertEqual(target.posicao_para_str(pos), case[0] + case[1])
 
 
 class TestObterPosicaoesAdjacentes(unittest.TestCase):
