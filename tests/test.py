@@ -1,4 +1,5 @@
 import unittest
+from unittest.mock import patch
 import sys
 import importlib
 import os
@@ -8,6 +9,7 @@ target = importlib.import_module(sys.argv[1])
 
 
 class TestTADPosicao(unittest.TestCase):
+
     def setUp(self):
         self.positions = tuple((x, y) for x in 'abc' for y in '123')
 
@@ -130,6 +132,39 @@ class TestTADPosicao(unittest.TestCase):
             self.assertEqual(
                 correctResult, target.obter_posicoes_adjacentes(pos))
 
+    _cria_posicao, _cria_copia_posicao, _obter_pos_c, _obter_pos_l, \
+        _eh_posicao, _posicoes_iguais, _posicao_para_str = (
+        lambda c, l: {n: 'c' if chr(n) == c else 'l' if chr(n) == l \
+                      else '' for n in range(122,-1,-1)},
+        lambda p: {k:v for (k,v) in p.item()},
+        lambda p: chr([k for (k,v) in p.items() if v == 'c'][0]),
+        lambda p: chr([k for (k,v) in p.items() if v == 'l'][0]),
+        lambda p: type(p) == dict and [*p.keys()] == [*range(122,-1,-1)] and \
+            [*p.values()].count('c') == [*p.values()].count('l') == 1,
+        lambda p1, p2: eh_posicao(p1) and eh_posicao(p2) and \
+            [*p1.values()].index('c') == [*p2.values()].index('c') and \
+            [*p1.values()].index('l') == [*p2.values()].index('l'),
+        lambda p: ''.join([chr(k) for (k,v) in p.items() if v in ('c', 'l')])
+    )
+
+    @patch.object(target, 'cria_posicao', side_effect = _cria_posicao)
+    @patch.object(target, 'cria_copia_posicao', side_effect = _cria_copia_posicao)
+    @patch.object(target, 'obter_pos_c', side_effect = _obter_pos_c)
+    @patch.object(target, 'obter_pos_l', side_effect = _obter_pos_l)
+    @patch.object(target, 'eh_posicao', side_effect = _eh_posicao)
+    @patch.object(target, 'posicoes_iguais', side_effect = _posicoes_iguais)
+    @patch.object(target, 'posicao_para_str', side_effect = _posicao_para_str)
+    def test_posicao_abstracao(self, *_):
+        """
+        Testa as barreiras de abstração do TAD Posição
+        """
+
+        # NOTE: Esta implementação de TAD foi criada de propósito para ser absurda,
+        #   copiar isto seria extremamente obvio e uma má decisão académica
+
+        self.test_obter_posicoes_adjacentes()
+
+
 
 class TestTADPeca(unittest.TestCase):
     def setUp(self):
@@ -226,6 +261,30 @@ class TestTADPeca(unittest.TestCase):
             piece = self.pieces[i]
             p = target.cria_peca(piece)
             self.assertEqual(result[i], target.peca_para_inteiro(p))
+
+    _cria_peca, _cria_copia_peca, _eh_peca, _pecas_iguais, _peca_para_str = (
+        lambda s: {'foo' : 'bar'.join([chr(n) for n in range(ord(s))])},
+        lambda j: {'foo': j['foo']},
+        lambda j: j in tuple(cria_peca(chr(n)) for n in (32,88,79)),
+        lambda j1, j2: eh_peca(j1) and eh_peca(j2) and len(j1['foo']) == len(j2['foo']),
+        lambda j: ''.join(
+            [chr(n) if n != 92 else chr(ord(j['foo'][-1]) + 1) for n in range(91, 94)])
+    )
+
+    @patch.object(target, 'cria_peca', side_effect = _cria_peca)
+    @patch.object(target, 'cria_copia_peca', side_effect = _cria_copia_peca)
+    @patch.object(target, 'eh_peca', side_effect = _eh_peca)
+    @patch.object(target, 'pecas_iguais', side_effect = _pecas_iguais)
+    @patch.object(target, 'peca_para_str', side_effect = _peca_para_str)
+    def test_peca_abstracao(self, *_):
+        """
+        Testa as barreiras de abstração do TAD Peca
+        """
+
+        # NOTE: Esta implementação de TAD foi criada de propósito para ser absurda,
+        #   copiar isto seria extremamente obvio e uma má decisão académica
+
+        self.test_peca_para_inteiro()
 
 
 class TestTabuleiroParaStr(unittest.TestCase):
