@@ -20,7 +20,7 @@ class TestTADPosicao(unittest.TestCase):
                      ('c', 2), ('aa', '-2'), ('b', 3.0), ('c', '11'), ('ab', '12'))
 
         for case in testcases:
-            with self.assertRaises(ValueError) as ctx:
+            with self.assertRaises(ValueError, msg='ValueError not raised for {}'.format(case)) as ctx:
                 target.cria_posicao(case[0], case[1])
             self.assertEqual(
                 'cria_posicao: argumentos invalidos', str(ctx.exception))
@@ -129,6 +129,103 @@ class TestTADPosicao(unittest.TestCase):
                 x[0], x[1]) for x in result[i])
             self.assertEqual(
                 correctResult, target.obter_posicoes_adjacentes(pos))
+
+
+class TestTADPeca(unittest.TestCase):
+    def setUp(self):
+        self.pieces = list('XO ')
+        self.invalid_pieces = (True, False, 0, 4, 1.45, 'x', 'o', '\t', '\u200B', {
+                               'foo': 'bar'}, ['foo', 'bar'], ('foo', 'bar'))
+
+    def test_cria_peca_fail(self):
+        """
+        Testa a verificação dos argumentos no cria_peca.
+        Todos os casos devem retornar ValueError.
+        """
+        for piece in self.invalid_pieces:
+            with self.assertRaises(ValueError, msg='ValueError not raised for {}'.format(piece)) as ctx:
+                target.cria_peca(piece)
+            self.assertEqual(
+                'cria_peca: argumento invalido', str(ctx.exception))
+
+    def test_cria_peca_success(self):
+        """
+        Testa a criação das pecas sem retornar ValueError.
+        Todas as 3 pecas possiveis são testadas.
+        """
+        for piece in self.pieces:
+            try:
+                target.cria_peca(piece)
+            except ValueError:
+                self.fail("cria_peca raised ValueError when it shouldn't")
+
+    def test_cria_copia_peca(self):
+        """
+        Testa a criação de uma cópia de todas as pecas possíveis.
+        Relembra-se que a cópia não pode ser o mesmo objeto que o original,
+        isto é, "original == copia" tem de retornar False.
+        """
+        for piece in self.pieces:
+            original = target.cria_peca(piece)
+            copy = target.cria_copia_peca(original)
+            self.assertIsNot(original, copy)
+            self.assertTrue(target.pecas_iguais(original, copy))
+
+    def test_pecas_iguais_success(self):
+        """
+        Testa pecas_iguais para todas as peças válidas possíveis
+        """
+        for pieces in self.pieces:
+            p1 = target.cria_peca(pieces)
+            p2 = target.cria_peca(pieces)
+            self.assertTrue(target.pecas_iguais(p1, p2))
+
+    def test_pecas_iguais_fail(self):
+        """
+        Testa pecas_iguais para peças diferentes
+        """
+        p1 = target.cria_peca('X')
+        p2 = target.cria_peca('O')
+        self.assertFalse(target.pecas_iguais(p1, p2))
+
+        for piece in self.invalid_pieces:
+            # invalid pieces should return false
+            self.assertFalse(target.pecas_iguais(piece, piece))
+
+    def test_eh_peca_success(self):
+        """
+        Testa eh_peca para todas as peças válidas possíveis
+        """
+        for piece in self.pieces:
+            p1 = target.cria_peca(piece)
+            self.assertTrue(target.eh_peca(p1))
+
+    def test_eh_peca_fail(self):
+        """
+        Testa eh_peca para objetos que não sejam peças
+        """
+        for piece in self.invalid_pieces:
+            self.assertFalse(target.eh_peca(piece))
+
+    def test_peca_para_str(self):
+        """
+        Testa peca_para_str para todas as peºas válidas possíveis
+        """
+        for piece in self.pieces:
+            p = target.cria_peca(piece)
+            self.assertEqual(target.peca_para_str(p), '[' + piece + ']')
+
+    def test_peca_para_inteiro(self):
+        """
+        Testa peca_para_inteiro para todas as peças válidas possíveis
+        """
+
+        result = (1, -1, 0)
+
+        for i in range(len(self.pieces)):
+            piece = self.pieces[i]
+            p = target.cria_peca(piece)
+            self.assertEqual(result[i], target.peca_para_inteiro(p))
 
 
 class TestTabuleiroParaStr(unittest.TestCase):
