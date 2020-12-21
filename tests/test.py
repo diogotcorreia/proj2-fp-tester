@@ -17,7 +17,7 @@ class TestTADPosicao(unittest.TestCase):
         Todos os casos devem retornar ValueError.
         """
         testcases = (('a', '4'), ('d', '2'), (True, False),
-                     ('c', 2), ('aa', '-2'), ('b', 3.0), ('c', '11'))
+                     ('c', 2), ('aa', '-2'), ('b', 3.0), ('c', '11'), ('ab', '12'))
 
         for case in testcases:
             with self.assertRaises(ValueError) as ctx:
@@ -93,7 +93,7 @@ class TestTADPosicao(unittest.TestCase):
         """
         Testa eh_posicao para objetos que não sejam posições
         """
-        for case in (True, False, 34, 'fail', 43.543, {'c': 'a', 'l': 4}, ['z', '4'], ('d', '1')):
+        for case in (True, False, 34, 'fail', 43.543, {'c': 'a', 'l': 4}, ['z', '4'], ('d', '1'), {'coluna': 'b', 'linha': '12'}):
             self.assertFalse(target.eh_posicao(case))
 
     def test_posicao_para_str(self):
