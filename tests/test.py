@@ -228,6 +228,114 @@ class TestTADPeca(unittest.TestCase):
             self.assertEqual(result[i], target.peca_para_inteiro(p))
 
 
+class TestTADTabuleiro(unittest.TestCase):
+
+    def setUp(self):
+        self.valid_boards = [
+            ((0, 0, 0), (0, 0, 0), (0, 0, 0)),
+            ((0, -1, 0), (1, 0, 0), (0, 1, 0)),
+            ((1, 0, -1), (1, -1, 0), (1, 0, 0))
+        ]
+
+        self.invalid_boards = [
+            ((0, 1, 0), (1, 0, 0), (0, 0, 0)),
+            ((-1, 0, 0), (1, 0, 0), (-1, 0, -1)),
+            ((1, 0, -1), (0, -1, 1), (1, 1, -1)),
+            ((1, 0, -1), (1, 0, -1), (1, 0, -1)),
+            ((1, 1, 1), (0, 0, 0), (-1, -1, -1))
+        ]
+
+        self.not_boards = [True, False, 1, 0.5, 3.454, 'foobar']
+
+        self.position_map = (
+            ('a', '1', 0, 0),
+            ('b', '1', 0, 1),
+            ('c', '1', 0, 2),
+            ('a', '2', 1, 0),
+            ('b', '2', 1, 1),
+            ('c', '2', 1, 2),
+            ('a', '3', 2, 0),
+            ('b', '3', 2, 1),
+            ('c', '3', 2, 2)
+        )
+
+    def test_cria_tabuleiro(self):
+        """
+        Testa que a função cria_tabuleiro não dá erros.
+        """
+        try:
+            target.cria_tabuleiro()
+        except:
+            self.fail("Function cria_tabuleiro raises error when it shouldn't")
+
+    def test_cria_copia_tabuleiro(self):
+        """
+        Testa a criação de uma cópia de vários tabuleiros válidos.
+        Relembra-se que a cópia não pode ser o mesmo objeto que o original,
+        isto é, "original is copia" tem de retornar False.
+        """
+        for board in self.valid_boards:
+            original = target.tuplo_para_tabuleiro(board)
+            copy = target.cria_copia_tabuleiro(original)
+            self.assertIsNot(original, copy)
+            self.assertTrue(target.tabuleiros_iguais(original, copy))
+
+    def test_obter_peca(self):
+        """
+        Testa para tabuleiros válidos, que o valor de retorno da função
+        obter_peca retorna a peça na posição dada.
+        """
+        for board in self.valid_boards:
+            board_obj = target.tuplo_para_tabuleiro(board)
+            for pos in self.position_map:
+                correct_result = board[pos[2]][pos[3]]
+                result = target.obter_peca(
+                    board_obj, target.cria_posicao(pos[0], pos[1]))
+                self.assertEqual(
+                    correct_result, target.peca_para_inteiro(result))
+
+    def test_eh_tabuleiro_success(self):
+        """
+        Testa eh_tabuleiro para tabuleiros válidos (que retornem True).
+        """
+        for board in self.valid_boards:
+            board_obj = target.tuplo_para_tabuleiro(board)
+            self.assertTrue(target.eh_tabuleiro(board_obj))
+
+    def test_eh_tabuleiro_fail(self):
+        """
+        Testa eh_tabuleiro para tabuleiros inválidos (que retornem False).
+        """
+        for board in self.invalid_boards:
+            board_obj = target.tuplo_para_tabuleiro(board)
+            self.assertFalse(target.eh_tabuleiro(board_obj))
+
+        for board in self.not_boards:
+            self.assertFalse(target.eh_tabuleiro(board))
+
+    def test_tabuleiros_iguais_success(self):
+        """
+        Testa tabuleiros_iguais para tabuleiros iguais
+        """
+        for board in self.valid_boards:
+            b1 = target.tuplo_para_tabuleiro(board)
+            b2 = target.tuplo_para_tabuleiro(board)
+            self.assertTrue(target.tabuleiros_iguais(b1, b2))
+
+    def test_tabuleiros_iguais_fail(self):
+        """
+        Testa tabuleiros_iguais para tabuleiros diferentes
+        """
+        b1 = self.valid_boards[0]
+        for board in self.valid_boards[1:]:
+            b2 = target.tuplo_para_tabuleiro(board)
+            self.assertFalse(target.tabuleiros_iguais(b1, b2))
+
+        for board in self.invalid_boards:
+            # invalid boards should return false
+            self.assertFalse(target.tabuleiros_iguais(board, board))
+
+
 class TestTabuleiroParaStr(unittest.TestCase):
     def test_tabuleiro_para_str(self):
         """
