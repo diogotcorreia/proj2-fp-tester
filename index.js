@@ -17,7 +17,7 @@ app.post("/run", async (req, res) => {
   const filePath = path.join(__dirname, "tests", `runner-${uuid}.py`);
   await fs.writeFile(filePath, req.body);
 
-  const pythonProcess = spawn("python3", [
+  const pythonProcess = spawn("python3.5", [
     path.join(__dirname, "tests", "test.py"),
     `runner-${uuid}`,
   ]);
