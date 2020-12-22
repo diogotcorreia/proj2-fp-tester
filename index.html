@@ -10,11 +10,18 @@
     />
     <style>
       html,
+      body,
+      input,
+      textarea {
+        background-color: #202124;
+        color: #e8eaed;
+      }
+      html,
       body {
         font-family: "Roboto", sans-serif;
       }
       a {
-        color: #005f87;
+        color: #00aef8;
       }
       .content {
         display: flex;
@@ -22,6 +29,32 @@
       }
       .content > div {
         margin-right: 16px;
+      }
+      button {
+        background-color: #00aef8;
+        color: rgba(0, 0, 0, 0.87);
+        border: none;
+        cursor: pointer;
+        box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2),
+          0px 2px 2px 0px rgba(0, 0, 0, 0.14),
+          0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+        padding: 6px 16px;
+        font-family: "Roboto", sans-serif;
+        border-radius: 4px;
+        text-transform: uppercase;
+      }
+      .warning {
+        color: rgb(255, 213, 153);
+        background-color: rgb(25, 15, 0);
+        padding: 6px 16px;
+        border-radius: 4px;
+        width: fit-content;
+      }
+      th,
+      td {
+        padding: 5px;
+        text-align: left;
+        border-bottom: 1px solid #444;
       }
     </style>
   </head>
@@ -32,7 +65,13 @@
         >contribute with tests</a
       >.
     </p>
-    <p>We currently have tests for some TADs.</p>
+    <p>We currently have tests for some TADs. Full test list below.</p>
+    <div class="warning">
+      Due to the nature of the project, it's impossible to test all functions
+      independently.<br />
+      Some test failures might not be related to the function that's being
+      tested, but to another function used in the test.
+    </div>
     <div class="content">
       <div>
         <div>
@@ -44,8 +83,9 @@
         <p>
           Last ran: <span id="last-run"><i>never</i></span>
           <br />
-          <span id="ascii-alert" style="color: #f00"></span>
         </p>
+
+        <div id="ascii-alert" style="color: #f00"></div>
       </div>
       <div>
         <p>Output:</p>
@@ -74,12 +114,201 @@
       </p>
       <ul id="advanced-error-content"></ul>
     </div>
+    <div>
+      <h2>Full Tests List</h2>
+      <p>
+        Below is a list of the functions that are being tested, along with how
+        many tests each function has and which functions that test also depends
+        on.
+      </p>
+      <h4>TAD Posição</h4>
+      <table>
+        <tr>
+          <th>Function Name</th>
+          <th>Test Count</th>
+          <th>Observations</th>
+        </tr>
+        <tr>
+          <td><code>cria_posicao</code> (tests for failure)</td>
+          <td>8</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>cria_posicao</code> (tests for success)</td>
+          <td>9</td>
+          <td>Tests all 9 positions</td>
+        </tr>
+        <tr>
+          <td><code>cria_copia_posicao</code></td>
+          <td>9</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>obter_pos_c</code></td>
+          <td>9</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>obter_pos_l</code></td>
+          <td>9</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>posicoes_iguais</code> (tests for True)</td>
+          <td>9</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>posicoes_iguais</code> (tests for False)</td>
+          <td>1</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>eh_posicao</code> (tests for True)</td>
+          <td>9</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>eh_posicao</code> (tests for False)</td>
+          <td>10</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>posicao_para_str</code></td>
+          <td>9</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>obter_posicoes_adjacentes</code></td>
+          <td>9</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            Abstração procedimental (<code>obter_posicoes_adjacentes</code>)
+          </td>
+          <td>9</td>
+          <td></td>
+        </tr>
+      </table>
+      <h4>TAD Peça</h4>
+      <table>
+        <tr>
+          <th>Function Name</th>
+          <th>Test Count</th>
+          <th>Observations</th>
+        </tr>
+        <tr>
+          <td><code>cria_peca</code> (tests for failure)</td>
+          <td>14</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>cria_peca</code> (tests for success)</td>
+          <td>3</td>
+          <td>Tests all 3 pieces</td>
+        </tr>
+        <tr>
+          <td><code>cria_copia_peca</code></td>
+          <td>3</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>pecas_iguais</code> (tests for True)</td>
+          <td>3</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>pecas_iguais</code> (tests for False)</td>
+          <td>12</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>eh_peca</code> (tests for True)</td>
+          <td>3</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>eh_peca</code> (tests for False)</td>
+          <td>3</td>
+          <td>11</td>
+        </tr>
+        <tr>
+          <td><code>peca_para_str</code></td>
+          <td>3</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>peca_para_inteiro</code></td>
+          <td>3</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>Abstração procedimental (<code>peca_para_inteiro</code>)</td>
+          <td>3</td>
+          <td></td>
+        </tr>
+      </table>
+      <h4>TAD Tabuleiro</h4>
+      <table>
+        <tr>
+          <th>Function Name</th>
+          <th>Test Count</th>
+          <th>Observations</th>
+        </tr>
+        <tr>
+          <td><code>cria_tabuleiro</code></td>
+          <td>1</td>
+          <td>Only tests if it doesn't throw errors</td>
+        </tr>
+        <tr>
+          <td><code>cria_copia_tabuleiro</code></td>
+          <td>3</td>
+          <td>Requires <code>tuplo_para_tabuleiro</code> to be working</td>
+        </tr>
+        <tr>
+          <td><code>obter_peca</code></td>
+          <td>3 * 9 = 27</td>
+          <td>
+            Requires <code>tuplo_para_tabuleiro</code>,
+            <code>cria_posicao</code> and <code>peca_para_inteiro</code>
+            to be working
+          </td>
+        </tr>
+        <tr>
+          <td><code>eh_tabuleiro</code> (tests for True)</td>
+          <td>3</td>
+          <td>Requires <code>tuplo_para_tabuleiro</code> to be working</td>
+        </tr>
+        <tr>
+          <td><code>eh_tabuleiro</code> (tests for False)</td>
+          <td>5 + 6 = 11</td>
+          <td>Requires <code>tuplo_para_tabuleiro</code> to be working</td>
+        </tr>
+        <tr>
+          <td><code>tabuleiros_iguais</code> (tests for True)</td>
+          <td>3</td>
+          <td>Requires <code>tuplo_para_tabuleiro</code> to be working</td>
+        </tr>
+        <tr>
+          <td><code>tabuleiros_iguais</code> (tests for False)</td>
+          <td>2 + 5 = 7</td>
+          <td>Requires <code>tuplo_para_tabuleiro</code> to be working</td>
+        </tr>
+      </table>
+      <p>There are some other tests that aren't in this list yet.</p>
+    </div>
 
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script>
       const TEST_FILE_LINK =
         "https://github.com/diogotcorreia/proj2-fp-tester/blob/master/tests/test.py";
       const ERROR_REGEX = /File ".+\/tests\/test.py", line (\d+), in (\w+)/g;
+      const FUNCTION_REGEX = /^def (\w+)\([\w,* ]+\):/;
+      const WHITE_SPACE = /^\s/;
+      const TRY_EXCEPT = /[\s\n]try:/;
+      const FUNCTION_LENGTH_LIMIT = 40;
+
       const handleAdvancedErrorHandling = (output) => {
         const advancedDiv = document.getElementById("advanced-error-div");
         const matches = [...output.matchAll(ERROR_REGEX)];
@@ -97,6 +326,23 @@
           .join("");
       };
 
+      const getFunctionsSize = (lines) => {
+        const functions = {};
+        let currentFunction;
+        lines.forEach((v) => {
+          if (!v.trim()) return;
+          const match = v.match(FUNCTION_REGEX);
+          if (match) {
+            currentFunction = match[1];
+            functions[currentFunction] = 0;
+            return;
+          }
+          if (currentFunction && WHITE_SPACE.test(v))
+            functions[currentFunction]++;
+        });
+        return functions;
+      };
+
       document.getElementById("submit").onclick = async () => {
         const content = document.getElementById("code").value;
         const button = document.getElementById("submit");
@@ -110,16 +356,47 @@
         const lastrun = document.getElementById("last-run");
         lastrun.innerText = new Date().toLocaleString();
 
+        const warnings = [];
+
+        // Non ASCII test
         const nonAsciiCharacters = new Set(
           [...content].filter((c) => c.charCodeAt(0) > 128)
         );
-        const msg =
-          nonAsciiCharacters.size === 0
-            ? ""
-            : `You're using non-ASCII characters in your code: ${[
-                ...nonAsciiCharacters,
-              ].join(" ")}`;
-        document.getElementById("ascii-alert").innerText = msg;
+        if (nonAsciiCharacters.size > 0)
+          warnings.push(
+            `You're using non-ASCII characters in your code: ${[
+              ...nonAsciiCharacters,
+            ].join(" ")}`
+          );
+
+        // Column width test
+        const longLines = content
+          .split("\n")
+          .map((v, i) => (v.length > 80 ? i + 1 : -1))
+          .filter((v) => v != -1);
+        if (longLines.length > 0)
+          warnings.push(
+            `You have the following lines going over 80 columns: ${longLines.join(
+              ", "
+            )}`
+          );
+
+        // Function length test
+        functionsSize = getFunctionsSize(content.split("\n"));
+        Object.keys(functionsSize).forEach((fn) => {
+          lines = functionsSize[fn];
+          if (lines <= FUNCTION_LENGTH_LIMIT) return;
+          warnings.push(
+            `Function <code>${fn}</code> has ${lines} lines, which is over the ${FUNCTION_LENGTH_LIMIT} lines limit.`
+          );
+        });
+
+        if (TRY_EXCEPT.test(content))
+          warnings.push("The use of try/except is a bad practice.");
+
+        document.getElementById("ascii-alert").innerHTML = warnings.join(
+          "<br/>"
+        );
 
         handleAdvancedErrorHandling(response.data);
       };
