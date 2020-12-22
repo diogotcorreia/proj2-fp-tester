@@ -141,11 +141,15 @@ class TestTADPosicao(unittest.TestCase):
             lambda p: chr([k for (k, v) in p.items() if v == 'l'][0]),
             lambda p: type(p) == dict and [*p.keys()] == [*range(122, -1, -1)] and
             [*p.values()].count('c') == [*p.values()].count('l') == 1,
-            lambda p1, p2: eh_posicao(p1) and eh_posicao(p2) and
+            lambda p1, p2: type(p1) == type(p2) == dict and
+            [*p1.keys()] == [*p2.keys()] == [*range(122, -1, -1)] and
+            [*p1.values(), *p2.values()].count('c') ==
+            [*p1.values(), *p2.values()].count('l') == 2 and
+            eh_posicao(p1) and eh_posicao(p2) and
             [*p1.values()].index('c') == [*p2.values()].index('c') and
             [*p1.values()].index('l') == [*p2.values()].index('l'),
             lambda p: ''.join([chr(k)
-                               for (k, v) in p.items() if v in ('c', 'l')])
+                               for (k, v) in p.items() if v in ('c', 'l')][::-1])
         )
 
     @patch.object(target, 'cria_posicao', side_effect=_cria_posicao)
@@ -265,9 +269,11 @@ class TestTADPeca(unittest.TestCase):
     _cria_peca, _cria_copia_peca, _eh_peca, _pecas_iguais, _peca_para_str = (
         lambda s: {'foo': 'bar'.join([chr(n) for n in range(ord(s))])},
         lambda j: {'foo': j['foo']},
-        lambda j: j in tuple(cria_peca(chr(n)) for n in (32, 88, 79)),
-        lambda j1, j2: eh_peca(j1) and eh_peca(
-            j2) and len(j1['foo']) == len(j2['foo']),
+        lambda j: j in tuple({'foo': 'bar'.join([chr(n) for n in range(m)])}
+                             for m in (32, 88, 79)),
+        lambda j1, j2: all(j in tuple({'foo': 'bar'.join(
+            [chr(n) for n in range(m)])} for m in (32, 88, 79))
+            for j in (j1, j2)) and len(j1['foo']) == len(j2['foo']),
         lambda j: ''.join(
             [chr(n) if n != 92 else chr(ord(j['foo'][-1]) + 1) for n in range(91, 94)])
     )
