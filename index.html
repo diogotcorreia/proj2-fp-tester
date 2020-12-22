@@ -83,8 +83,9 @@
         <p>
           Last ran: <span id="last-run"><i>never</i></span>
           <br />
-          <span id="ascii-alert" style="color: #f00"></span>
         </p>
+
+        <div id="ascii-alert" style="color: #f00"></div>
       </div>
       <div>
         <p>Output:</p>
@@ -303,6 +304,10 @@
       const TEST_FILE_LINK =
         "https://github.com/diogotcorreia/proj2-fp-tester/blob/master/tests/test.py";
       const ERROR_REGEX = /File ".+\/tests\/test.py", line (\d+), in (\w+)/g;
+      const FUNCTION_REGEX = /^def (\w+)\([\w,* ]+\):/;
+      const WHITE_SPACE = /^\s/;
+      const FUNCTION_LENGTH_LIMIT = 40;
+
       const handleAdvancedErrorHandling = (output) => {
         const advancedDiv = document.getElementById("advanced-error-div");
         const matches = [...output.matchAll(ERROR_REGEX)];
@@ -320,6 +325,23 @@
           .join("");
       };
 
+      const getFunctionsSize = (lines) => {
+        const functions = {};
+        let currentFunction;
+        lines.forEach((v) => {
+          if (!v.trim()) return;
+          const match = v.match(FUNCTION_REGEX);
+          if (match) {
+            currentFunction = match[1];
+            functions[currentFunction] = 0;
+            return;
+          }
+          if (currentFunction && WHITE_SPACE.test(v))
+            functions[currentFunction]++;
+        });
+        return functions;
+      };
+
       document.getElementById("submit").onclick = async () => {
         const content = document.getElementById("code").value;
         const button = document.getElementById("submit");
@@ -333,16 +355,44 @@
         const lastrun = document.getElementById("last-run");
         lastrun.innerText = new Date().toLocaleString();
 
+        const warnings = [];
+
+        // Non ASCII test
         const nonAsciiCharacters = new Set(
           [...content].filter((c) => c.charCodeAt(0) > 128)
         );
-        const msg =
-          nonAsciiCharacters.size === 0
-            ? ""
-            : `You're using non-ASCII characters in your code: ${[
-                ...nonAsciiCharacters,
-              ].join(" ")}`;
-        document.getElementById("ascii-alert").innerText = msg;
+        if (nonAsciiCharacters.size > 0)
+          warnings.push(
+            `You're using non-ASCII characters in your code: ${[
+              ...nonAsciiCharacters,
+            ].join(" ")}`
+          );
+
+        // Column width test
+        const longLines = content
+          .split("\n")
+          .map((v, i) => (v.length > 80 ? i + 1 : -1))
+          .filter((v) => v != -1);
+        if (longLines.length > 0)
+          warnings.push(
+            `You have the following lines going over 80 columns: ${longLines.join(
+              ", "
+            )}`
+          );
+
+        // Function length test
+        functionsSize = getFunctionsSize(content.split("\n"));
+        Object.keys(functionsSize).forEach((fn) => {
+          lines = functionsSize[fn];
+          if (lines <= FUNCTION_LENGTH_LIMIT) return;
+          warnings.push(
+            `Function <code>${fn}</code> has ${lines} lines, which is over the ${FUNCTION_LENGTH_LIMIT} lines limit.`
+          );
+        });
+
+        document.getElementById("ascii-alert").innerHTML = warnings.join(
+          "<br/>"
+        );
 
         handleAdvancedErrorHandling(response.data);
       };
