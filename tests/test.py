@@ -158,7 +158,7 @@ class TestTADPosicao(unittest.TestCase):
     @patch.object(target, 'eh_posicao', side_effect=_eh_posicao)
     @patch.object(target, 'posicoes_iguais', side_effect=_posicoes_iguais)
     @patch.object(target, 'posicao_para_str', side_effect=_posicao_para_str)
-    def test_posicao_abstracao(self, *_):
+    def test_obter_posicoes_adjacentes_mock(self, *_):
         """
         Testa as barreiras de abstração do TAD Posição
         """
@@ -282,7 +282,7 @@ class TestTADPeca(unittest.TestCase):
     @patch.object(target, 'eh_peca', side_effect=_eh_peca)
     @patch.object(target, 'pecas_iguais', side_effect=_pecas_iguais)
     @patch.object(target, 'peca_para_str', side_effect=_peca_para_str)
-    def test_peca_abstracao(self, *_):
+    def test_peca_para_inteiro_mock(self, *_):
         """
         Testa as barreiras de abstração do TAD Peca
         """
