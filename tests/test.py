@@ -401,7 +401,6 @@ class TestTADTabuleiro(unittest.TestCase):
             # invalid boards should return false
             self.assertFalse(target.tabuleiros_iguais(board, board))
 
->>>>>>> upstream/master
 
 class TestTabuleiroParaStr(unittest.TestCase):
     def test_tabuleiro_para_str(self):
