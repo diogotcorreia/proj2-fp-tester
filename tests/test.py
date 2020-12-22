@@ -145,7 +145,6 @@ class TestTADPosicao(unittest.TestCase):
             [*p1.keys()] == [*p2.keys()] == [*range(122, -1, -1)] and
             [*p1.values(), *p2.values()].count('c') ==
             [*p1.values(), *p2.values()].count('l') == 2 and
-            eh_posicao(p1) and eh_posicao(p2) and
             [*p1.values()].index('c') == [*p2.values()].index('c') and
             [*p1.values()].index('l') == [*p2.values()].index('l'),
             lambda p: ''.join([chr(k)
