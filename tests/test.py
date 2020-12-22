@@ -148,7 +148,7 @@ class TestTADPosicao(unittest.TestCase):
             eh_posicao(p1) and eh_posicao(p2) and \
             [*p1.values()].index('c') == [*p2.values()].index('c') and \
             [*p1.values()].index('l') == [*p2.values()].index('l'),
-        lambda p: ''.join([chr(k) for (k,v) in p.items() if v in ('c', 'l')])
+        lambda p: ''.join([chr(k) for (k,v) in p.items() if v in ('c', 'l')][::-1])
     )
 
     @patch.object(target, 'cria_posicao', side_effect = _cria_posicao)
