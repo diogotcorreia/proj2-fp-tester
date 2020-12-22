@@ -263,12 +263,12 @@
         </tr>
         <tr>
           <td><code>cria_copia_tabuleiro</code></td>
-          <td>3</td>
+          <td>5</td>
           <td>Requires <code>tuplo_para_tabuleiro</code> to be working</td>
         </tr>
         <tr>
           <td><code>obter_peca</code></td>
-          <td>3 * 9 = 27</td>
+          <td>5 * 9 = 45</td>
           <td>
             Requires <code>tuplo_para_tabuleiro</code>,
             <code>cria_posicao</code> and <code>peca_para_inteiro</code>
@@ -277,23 +277,86 @@
         </tr>
         <tr>
           <td><code>eh_tabuleiro</code> (tests for True)</td>
-          <td>3</td>
+          <td>5</td>
           <td>Requires <code>tuplo_para_tabuleiro</code> to be working</td>
         </tr>
         <tr>
           <td><code>eh_tabuleiro</code> (tests for False)</td>
-          <td>5 + 6 = 11</td>
+          <td>7 + 6 = 13</td>
           <td>Requires <code>tuplo_para_tabuleiro</code> to be working</td>
         </tr>
         <tr>
           <td><code>tabuleiros_iguais</code> (tests for True)</td>
-          <td>3</td>
+          <td>5</td>
           <td>Requires <code>tuplo_para_tabuleiro</code> to be working</td>
         </tr>
         <tr>
           <td><code>tabuleiros_iguais</code> (tests for False)</td>
-          <td>2 + 5 = 7</td>
+          <td>2 + 7 = 9</td>
           <td>Requires <code>tuplo_para_tabuleiro</code> to be working</td>
+        </tr>
+        <tr>
+          <td><code>obter_vetor</code></td>
+          <td>5 * 6 = 30</td>
+          <td>
+            Requires <code>tuplo_para_tabuleiro</code> and
+            <code>peca_para_inteiro</code> to be working
+          </td>
+        </tr>
+        <tr>
+          <td><code>tabuleiro_para_str</code></td>
+          <td>5</td>
+          <td>Requires <code>tuplo_para_tabuleiro</code> to be working</td>
+        </tr>
+        <tr>
+          <td><code>eh_posicao_livre</code></td>
+          <td>5 * 9 = 45</td>
+          <td>
+            Requires <code>tuplo_para_tabuleiro</code> and
+            <code>cria_posicao</code> to be working
+          </td>
+        </tr>
+        <tr>
+          <td><code>coloca_peca</code></td>
+          <td>1</td>
+          <td>
+            Requires <code>cria_tabuleiro</code>, <code>cria_peca</code>,
+            <code>obter_peca</code>, <code>pecas_iguais</code> and
+            <code>cria_posicao</code> to be working
+          </td>
+        </tr>
+        <tr>
+          <td><code>move_peca</code></td>
+          <td>1</td>
+          <td>
+            Requires <code>tuplo_para_tabuleiro</code>,
+            <code>pecas_iguais</code>, <code>obter_peca</code>,
+            <code>cria_peca</code> and <code>cria_posicao</code> to be working
+          </td>
+        </tr>
+        <tr>
+          <td><code>remove_peca</code></td>
+          <td>1</td>
+          <td>
+            Requires <code>tuplo_para_tabuleiro</code>,
+            <code>pecas_iguais</code>, <code>obter_peca</code>,
+            <code>cria_peca</code> and <code>cria_posicao</code> to be working
+          </td>
+        </tr>
+        <tr>
+          <td><code>obter_ganhador</code></td>
+          <td>5</td>
+          <td>Requires <code>tuplo_para_tabuleiro</code> and <code>peca_para_inteiro</code> to be working</td>
+        </tr>
+        <tr>
+          <td><code>obter_posicoes_livres</code></td>
+          <td>5</td>
+          <td>Requires <code>tuplo_para_tabuleiro</code> and <code>posicao_para_str</code> to be working</td>
+        </tr>
+        <tr>
+          <td><code>obter_posicoes_jogador</code></td>
+          <td>5 * 2 = 10</td>
+          <td>Requires <code>tuplo_para_tabuleiro</code> and <code>posicao_para_str</code> to be working</td>
         </tr>
       </table>
       <p>There are some other tests that aren't in this list yet.</p>
