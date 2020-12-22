@@ -134,26 +134,27 @@ class TestTADPosicao(unittest.TestCase):
 
     _cria_posicao, _cria_copia_posicao, _obter_pos_c, _obter_pos_l, \
         _eh_posicao, _posicoes_iguais, _posicao_para_str = (
-        lambda c, l: {n: 'c' if chr(n) == c else 'l' if chr(n) == l \
-                      else '' for n in range(122,-1,-1)},
-        lambda p: {k:v for (k,v) in p.item()},
-        lambda p: chr([k for (k,v) in p.items() if v == 'c'][0]),
-        lambda p: chr([k for (k,v) in p.items() if v == 'l'][0]),
-        lambda p: type(p) == dict and [*p.keys()] == [*range(122,-1,-1)] and \
+            lambda c, l: {n: 'c' if chr(n) == c else 'l' if chr(n) == l
+                          else '' for n in range(122, -1, -1)},
+            lambda p: {k: v for (k, v) in p.item()},
+            lambda p: chr([k for (k, v) in p.items() if v == 'c'][0]),
+            lambda p: chr([k for (k, v) in p.items() if v == 'l'][0]),
+            lambda p: type(p) == dict and [*p.keys()] == [*range(122, -1, -1)] and
             [*p.values()].count('c') == [*p.values()].count('l') == 1,
-        lambda p1, p2: eh_posicao(p1) and eh_posicao(p2) and \
-            [*p1.values()].index('c') == [*p2.values()].index('c') and \
+            lambda p1, p2: eh_posicao(p1) and eh_posicao(p2) and
+            [*p1.values()].index('c') == [*p2.values()].index('c') and
             [*p1.values()].index('l') == [*p2.values()].index('l'),
-        lambda p: ''.join([chr(k) for (k,v) in p.items() if v in ('c', 'l')])
-    )
+            lambda p: ''.join([chr(k)
+                               for (k, v) in p.items() if v in ('c', 'l')])
+        )
 
-    @patch.object(target, 'cria_posicao', side_effect = _cria_posicao)
-    @patch.object(target, 'cria_copia_posicao', side_effect = _cria_copia_posicao)
-    @patch.object(target, 'obter_pos_c', side_effect = _obter_pos_c)
-    @patch.object(target, 'obter_pos_l', side_effect = _obter_pos_l)
-    @patch.object(target, 'eh_posicao', side_effect = _eh_posicao)
-    @patch.object(target, 'posicoes_iguais', side_effect = _posicoes_iguais)
-    @patch.object(target, 'posicao_para_str', side_effect = _posicao_para_str)
+    @patch.object(target, 'cria_posicao', side_effect=_cria_posicao)
+    @patch.object(target, 'cria_copia_posicao', side_effect=_cria_copia_posicao)
+    @patch.object(target, 'obter_pos_c', side_effect=_obter_pos_c)
+    @patch.object(target, 'obter_pos_l', side_effect=_obter_pos_l)
+    @patch.object(target, 'eh_posicao', side_effect=_eh_posicao)
+    @patch.object(target, 'posicoes_iguais', side_effect=_posicoes_iguais)
+    @patch.object(target, 'posicao_para_str', side_effect=_posicao_para_str)
     def test_posicao_abstracao(self, *_):
         """
         Testa as barreiras de abstração do TAD Posição
@@ -163,7 +164,6 @@ class TestTADPosicao(unittest.TestCase):
         #   copiar isto seria extremamente obvio e uma má decisão académica
 
         self.test_obter_posicoes_adjacentes()
-
 
 
 class TestTADPeca(unittest.TestCase):
@@ -263,19 +263,20 @@ class TestTADPeca(unittest.TestCase):
             self.assertEqual(result[i], target.peca_para_inteiro(p))
 
     _cria_peca, _cria_copia_peca, _eh_peca, _pecas_iguais, _peca_para_str = (
-        lambda s: {'foo' : 'bar'.join([chr(n) for n in range(ord(s))])},
+        lambda s: {'foo': 'bar'.join([chr(n) for n in range(ord(s))])},
         lambda j: {'foo': j['foo']},
-        lambda j: j in tuple(cria_peca(chr(n)) for n in (32,88,79)),
-        lambda j1, j2: eh_peca(j1) and eh_peca(j2) and len(j1['foo']) == len(j2['foo']),
+        lambda j: j in tuple(cria_peca(chr(n)) for n in (32, 88, 79)),
+        lambda j1, j2: eh_peca(j1) and eh_peca(
+            j2) and len(j1['foo']) == len(j2['foo']),
         lambda j: ''.join(
             [chr(n) if n != 92 else chr(ord(j['foo'][-1]) + 1) for n in range(91, 94)])
     )
 
-    @patch.object(target, 'cria_peca', side_effect = _cria_peca)
-    @patch.object(target, 'cria_copia_peca', side_effect = _cria_copia_peca)
-    @patch.object(target, 'eh_peca', side_effect = _eh_peca)
-    @patch.object(target, 'pecas_iguais', side_effect = _pecas_iguais)
-    @patch.object(target, 'peca_para_str', side_effect = _peca_para_str)
+    @patch.object(target, 'cria_peca', side_effect=_cria_peca)
+    @patch.object(target, 'cria_copia_peca', side_effect=_cria_copia_peca)
+    @patch.object(target, 'eh_peca', side_effect=_eh_peca)
+    @patch.object(target, 'pecas_iguais', side_effect=_pecas_iguais)
+    @patch.object(target, 'peca_para_str', side_effect=_peca_para_str)
     def test_peca_abstracao(self, *_):
         """
         Testa as barreiras de abstração do TAD Peca
@@ -293,7 +294,48 @@ class TestTADTabuleiro(unittest.TestCase):
         self.valid_boards = [
             ((0, 0, 0), (0, 0, 0), (0, 0, 0)),
             ((0, -1, 0), (1, 0, 0), (0, 1, 0)),
-            ((1, 0, -1), (1, -1, 0), (1, 0, 0))
+            ((1, 0, -1), (1, -1, 0), (1, 0, 0)),
+            ((1, -1, 0), (-1, 0, 1), (0, -1, 1))
+        ]
+
+        self.valid_boards_vertical_vectors = [
+            ((0, 0, 0), (0, 0, 0), (0, 0, 0)),
+            ((0, 1, 0), (-1, 0, 1), (0, 0, 0)),
+            ((1, 1, 1), (0, -1, 0), (-1, 0, 0)),
+            ((1, -1, 0), (-1, 0, -1), (0, 1, 1))
+        ]
+
+        self.valid_boards_winners = [0, 0, 1, 0]
+        self.valid_boards_free = [
+            ('a1', 'b1', 'c1', 'a2', 'b2', 'c2', 'a3', 'b3', 'c3'),
+            ('a1', 'c1', 'b2', 'c2', 'a3', 'c3'),
+            ('b1', 'c2', 'b3', 'c3'),
+            ('c1', 'b2', 'a3'),
+        ]
+        self.valid_boards_piece = [
+            {
+                'X': (),
+                'O': (),
+            },
+            {
+                'X': ('a2', 'b3'),
+                'O': ('b1', ),
+            },
+            {
+                'X': ('a1', 'a2', 'a3'),
+                'O': ('c1', 'b2'),
+            },
+            {
+                'X': ('a1', 'c2', 'c3'),
+                'O': ('b1', 'a2', 'b3'),
+            }
+        ]
+
+        self.valid_boards_str = [
+            "   a   b   c\n1 [ ]-[ ]-[ ]\n   | \\ | / |\n2 [ ]-[ ]-[ ]\n   | / | \\ |\n3 [ ]-[ ]-[ ]",
+            "   a   b   c\n1 [ ]-[O]-[ ]\n   | \\ | / |\n2 [X]-[ ]-[ ]\n   | / | \\ |\n3 [ ]-[X]-[ ]",
+            "   a   b   c\n1 [X]-[ ]-[O]\n   | \\ | / |\n2 [X]-[O]-[ ]\n   | / | \\ |\n3 [X]-[ ]-[ ]",
+            "   a   b   c\n1 [X]-[O]-[ ]\n   | \\ | / |\n2 [O]-[ ]-[X]\n   | / | \\ |\n3 [ ]-[O]-[X]"
         ]
 
         self.invalid_boards = [
@@ -317,6 +359,8 @@ class TestTADTabuleiro(unittest.TestCase):
             ('b', '3', 2, 1),
             ('c', '3', 2, 2)
         )
+
+        self.vectors = ['a', 'b', 'c', '1', '2', '3']
 
     def test_cria_tabuleiro(self):
         """
@@ -392,10 +436,136 @@ class TestTADTabuleiro(unittest.TestCase):
 
         for board in self.invalid_boards:
             # invalid boards should return false
-            self.assertFalse(target.tabuleiros_iguais(board, board))
+            board_obj = target.tuplo_para_tabuleiro(board)
+            self.assertFalse(target.tabuleiros_iguais(board_obj, board_obj))
+
+    def test_obter_vetor(self):
+        """
+        Testa obter_vetor para todos os vetores em tabuleiros válidos
+        """
+        for j in range(len(self.valid_boards)):
+            board = self.valid_boards[j]
+            board_obj = target.tuplo_para_tabuleiro(board)
+            for i in range(len(self.vectors)):
+                vector = self.vectors[i]
+                result = tuple(target.peca_para_inteiro(x)
+                               for x in target.obter_vetor(board_obj, vector))
+                correct_result = self.valid_boards_vertical_vectors[j][i] if i < 3 else board[i - 3]
+                self.assertEqual(result, correct_result)
+
+    def test_tabuleiro_para_str(self):
+        """
+        Testa a conversão do tabuleiro para a sua representação em string
+        """
+        for i in range(len(self.valid_boards)):
+            board = self.valid_boards[i]
+            self.assertEqual(self.valid_boards_str[i], target.tabuleiro_para_str(
+                target.tuplo_para_tabuleiro(board)))
+
+    def test_eh_posicao_livre(self):
+        """
+        Testa eh_posicao_livre para todas as posições de tabuleiros válidos
+        """
+        for board in self.valid_boards:
+            board_obj = target.tuplo_para_tabuleiro(board)
+            for pos in self.position_map:
+                pos_obj = target.cria_posicao(pos[0], pos[1])
+                self.assertEqual(target.eh_posicao_livre(
+                    board_obj, pos_obj), board[pos[2]][pos[3]] == 0)
+
+    def test_coloca_peca(self):
+        """
+        Testa coloca_peca para uma posicao num tabuleiro
+        """
+        board = target.cria_tabuleiro()
+        empty_piece = target.cria_peca(' ')
+        piece = target.cria_peca('X')
+        target_pos = target.cria_posicao('a', '1')
+
+        self.assertEqual(target.obter_peca(board, target_pos), empty_piece)
+        new_board = target.coloca_peca(board, piece, target_pos)
+        # coloca_peca should return the same board
+        self.assertIs(board, new_board)
+        self.assertTrue(target.pecas_iguais(
+            piece, target.obter_peca(board, target_pos)))
+
+    def test_move_peca(self):
+        """
+        Testa move_peca de uma posicao para outra num tabuleiro
+        """
+        board = target.tuplo_para_tabuleiro(self.valid_boards[3])
+        pos_from = target.cria_posicao('b', '3')
+        pos_to = target.cria_posicao('a', '3')
+
+        piece = target.cria_peca('O')
+
+        new_board = target.move_peca(board, pos_from, pos_to)
+        # move_peca should return the same board
+        self.assertIs(board, new_board)
+        self.assertTrue(target.pecas_iguais(
+            piece, target.obter_peca(new_board, pos_to)))
+
+    def test_remove_peca(self):
+        """
+        Testa remove_peca numa posicao de um tabuleiro
+        """
+        board = target.tuplo_para_tabuleiro(self.valid_boards[2])
+        pos = target.cria_posicao('a', '2')
+
+        piece = target.cria_peca('X')
+        empty_piece = target.cria_peca(' ')
+
+        self.assertTrue(target.pecas_iguais(
+            piece, target.obter_peca(board, pos)))
+        new_board = target.remove_peca(board, pos)
+        # remove_peca should return the same board
+        self.assertIs(board, new_board)
+        self.assertTrue(target.pecas_iguais(
+            empty_piece, target.obter_peca(board, pos)))
+
+    def test_obter_ganhador(self):
+        """
+        Testa obter_ganhador para vários tabuleiros válidos
+        """
+        for i in range(len(self.valid_boards)):
+            board = target.tuplo_para_tabuleiro(self.valid_boards[i])
+            winner = self.valid_boards_winners[i]
+
+            winner_result = target.obter_ganhador(board)
+            self.assertEqual(winner, target.peca_para_inteiro(winner_result))
+
+    def test_obter_posicoes_livres(self):
+        """
+        Testa obter_posicoes_livres para varios tabuleiros válidos
+        """
+        for i in range(len(self.valid_boards)):
+            board = target.tuplo_para_tabuleiro(self.valid_boards[i])
+            empty_positions = self.valid_boards_free[i]
+
+            empty_positions_result = target.obter_posicoes_livres(board)
+
+            self.assertEqual(type(empty_positions_result), tuple)
+            self.assertEqual(tuple(target.posicao_para_str(x)
+                                   for x in empty_positions_result), empty_positions)
+
+    def test_obter_posicoes_jogador(self):
+        """
+        Testa obter_posicoes_livres para varios tabuleiros válidos
+        """
+        for i in range(len(self.valid_boards)):
+            board = target.tuplo_para_tabuleiro(self.valid_boards[i])
+            for player in self.valid_boards_piece[i]:
+                pos = self.valid_boards_piece[i][player]
+
+                piece = target.cria_peca(player)
+                pos_result = target.obter_posicoes_jogador(board, piece)
+
+                self.assertEqual(type(pos_result), tuple)
+                self.assertEqual(tuple(target.posicao_para_str(x)
+                                       for x in pos_result), pos)
 
 
-class TestTabuleiroParaStr(unittest.TestCase):
+class TestsEnunciado(unittest.TestCase):
     def test_tabuleiro_para_str(self):
         """
         Str do tabuleiro vazio
@@ -409,29 +579,21 @@ class TestTabuleiroParaStr(unittest.TestCase):
             "   a   b   c\n1 [ ]-[ ]-[ ]\n   | \\ | / |\n2 [ ]-[ ]-[ ]\n   | / | \\ |\n3 [ ]-[ ]-[ ]",
         )
 
-
-class TestPecasIguais(unittest.TestCase):
     def test_pecas_iguais(self):
         result = target.pecas_iguais(
             target.cria_peca("X"), target.cria_peca("O"))
 
         self.assertEqual(result, False)
 
-
-class TestPecaParaStr(unittest.TestCase):
     def test_peca_para_str(self):
         result = target.peca_para_str(target.cria_peca("X"))
         self.assertEqual(result, "[X]")
 
-
-class TestPecaParaInteiro(unittest.TestCase):
     def test_peca_para_inteiro(self):
         result = target.peca_para_inteiro(target.cria_peca(" "))
 
         self.assertEqual(result, 0)
 
-
-class TestColocaPeca(unittest.TestCase):
     def test_coloca_peca(self):
         data1 = target.cria_tabuleiro()
         data2 = target.cria_peca("X")
@@ -445,8 +607,6 @@ class TestColocaPeca(unittest.TestCase):
             "   a   b   c\n1 [X]-[ ]-[ ]\n   | \\ | / |\n2 [ ]-[ ]-[ ]\n   | / | \\ |\n3 [ ]-[ ]-[ ]",
         )
 
-
-class TestMovePeca(unittest.TestCase):
     def test_move_peca(self):
         data1 = target.cria_tabuleiro()
         data2 = target.cria_peca("X")
@@ -462,8 +622,6 @@ class TestMovePeca(unittest.TestCase):
             "   a   b   c\n1 [ ]-[X]-[ ]\n   | \\ | / |\n2 [ ]-[ ]-[ ]\n   | / | \\ |\n3 [ ]-[ ]-[ ]",
         )
 
-
-class TestObterGanhador(unittest.TestCase):
     def test_obter_ganhador(self):
         data = target.tuplo_para_tabuleiro(
             ((0, 1, -1), (-0, 1, -1), (1, 0, -1)))
@@ -472,8 +630,6 @@ class TestObterGanhador(unittest.TestCase):
 
         self.assertEqual(result, "[O]")
 
-
-class TestObterPosicoesLivres(unittest.TestCase):
     def test_obter_posicoes_livres(self):
         data = target.tuplo_para_tabuleiro(
             ((0, 1, -1), (-0, 1, -1), (1, 0, -1)))
@@ -484,8 +640,6 @@ class TestObterPosicoesLivres(unittest.TestCase):
 
         self.assertEqual(result, ("a1", "a2", "b3"))
 
-
-class TestObterVetor(unittest.TestCase):
     def test_obter_vetor_1(self):
         data = target.tuplo_para_tabuleiro(
             ((0, 1, -1), (-0, 1, -1), (1, 0, -1)))
