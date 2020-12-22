@@ -24,13 +24,15 @@ app.post("/run", async (req, res) => {
 
   let result = "";
 
-  pythonProcess.stdout.on("data", (data) => {
-    result += data.toString() + "\n";
-  });
+  const handleData = (data) => {
+    str = data.toString();
+    if (/\.+/.test(str)) result += str;
+    else result += str + "\n";
+  };
 
-  pythonProcess.stderr.on("data", (data) => {
-    result += data.toString() + "\n";
-  });
+  pythonProcess.stdout.on("data", handleData);
+
+  pythonProcess.stderr.on("data", handleData);
 
   pythonProcess.on("close", async () => {
     await fs.unlink(filePath);
