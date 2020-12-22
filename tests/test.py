@@ -25,7 +25,8 @@ class TestTADPosicao(unittest.TestCase):
             with self.assertRaises(ValueError, msg='ValueError not raised for {}'.format(case)) as ctx:
                 target.cria_posicao(case[0], case[1])
             self.assertEqual(
-                'cria_posicao: argumentos invalidos', str(ctx.exception))
+                'cria_posicao: argumentos invalidos', str(ctx.exception),
+                msg='Falhou nos inputs {}, {}'.format(case[0], case[1]))
 
     def test_cria_posicao_success(self):
         """
@@ -36,7 +37,8 @@ class TestTADPosicao(unittest.TestCase):
             try:
                 target.cria_posicao(case[0], case[1])
             except ValueError:
-                self.fail("cria_posicao raised ValueError when it shouldn't")
+                self.fail("cria_posicao raised ValueError when it shouldn't. Input: {}, {}".format(
+                    case[0], case[1]))
 
     def test_cria_copia_posicao(self):
         """
@@ -130,7 +132,7 @@ class TestTADPosicao(unittest.TestCase):
             correctResult = tuple(target.cria_posicao(
                 x[0], x[1]) for x in result[i])
             self.assertEqual(
-                correctResult, target.obter_posicoes_adjacentes(pos))
+                correctResult, target.obter_posicoes_adjacentes(pos), 'Falhou na posicao ' + c + l)
 
     _cria_posicao, _cria_copia_posicao, _obter_pos_c, _obter_pos_l, \
         _eh_posicao, _posicoes_iguais, _posicao_para_str = (
@@ -418,7 +420,8 @@ class TestTADTabuleiro(unittest.TestCase):
         """
         for board in self.valid_boards:
             board_obj = target.tuplo_para_tabuleiro(board)
-            self.assertTrue(target.eh_tabuleiro(board_obj))
+            self.assertTrue(target.eh_tabuleiro(board_obj),
+                            msg="Input: {}".format(board))
 
     def test_eh_tabuleiro_fail(self):
         """
@@ -426,10 +429,12 @@ class TestTADTabuleiro(unittest.TestCase):
         """
         for board in self.invalid_boards:
             board_obj = target.tuplo_para_tabuleiro(board)
-            self.assertFalse(target.eh_tabuleiro(board_obj))
+            self.assertFalse(target.eh_tabuleiro(board_obj),
+                             msg="Input: {}".format(board))
 
         for board in self.not_boards:
-            self.assertFalse(target.eh_tabuleiro(board))
+            self.assertFalse(target.eh_tabuleiro(board),
+                             msg="Input: {}".format(board))
 
     def test_tabuleiros_iguais_success(self):
         """
@@ -438,7 +443,8 @@ class TestTADTabuleiro(unittest.TestCase):
         for board in self.valid_boards:
             b1 = target.tuplo_para_tabuleiro(board)
             b2 = target.tuplo_para_tabuleiro(board)
-            self.assertTrue(target.tabuleiros_iguais(b1, b2))
+            self.assertTrue(target.tabuleiros_iguais(
+                b1, b2), msg="Input: {}".format(board))
 
     def test_tabuleiros_iguais_fail(self):
         """
@@ -446,13 +452,16 @@ class TestTADTabuleiro(unittest.TestCase):
         """
         b1 = self.valid_boards[0]
         for board in self.valid_boards[1:]:
+            board1 = target.tuplo_para_tabuleiro(b1)
             b2 = target.tuplo_para_tabuleiro(board)
-            self.assertFalse(target.tabuleiros_iguais(b1, b2))
+            self.assertFalse(target.tabuleiros_iguais(
+                board1, b2), msg="Input: {}, {}".format(b1, board))
 
         for board in self.invalid_boards:
             # invalid boards should return false
             board_obj = target.tuplo_para_tabuleiro(board)
-            self.assertFalse(target.tabuleiros_iguais(board_obj, board_obj))
+            self.assertFalse(target.tabuleiros_iguais(
+                board_obj, board_obj), msg="Input: {}".format(board))
 
     def test_obter_vetor(self):
         """
@@ -466,7 +475,8 @@ class TestTADTabuleiro(unittest.TestCase):
                 result = tuple(target.peca_para_inteiro(x)
                                for x in target.obter_vetor(board_obj, vector))
                 correct_result = self.valid_boards_vertical_vectors[j][i] if i < 3 else board[i - 3]
-                self.assertEqual(result, correct_result)
+                self.assertEqual(result, correct_result,
+                                 msg="Input: {}, {}".format(board, vector))
 
     def test_tabuleiro_para_str(self):
         """
@@ -475,7 +485,7 @@ class TestTADTabuleiro(unittest.TestCase):
         for i in range(len(self.valid_boards)):
             board = self.valid_boards[i]
             self.assertEqual(self.valid_boards_str[i], target.tabuleiro_para_str(
-                target.tuplo_para_tabuleiro(board)))
+                target.tuplo_para_tabuleiro(board)), msg="Input: {}".format(board))
 
     def test_eh_posicao_livre(self):
         """
@@ -486,7 +496,7 @@ class TestTADTabuleiro(unittest.TestCase):
             for pos in self.position_map:
                 pos_obj = target.cria_posicao(pos[0], pos[1])
                 self.assertEqual(target.eh_posicao_livre(
-                    board_obj, pos_obj), board[pos[2]][pos[3]] == 0)
+                    board_obj, pos_obj), board[pos[2]][pos[3]] == 0, msg="Input: {}, {}".format(board, pos[0] + pos[1]))
 
     def test_coloca_peca(self):
         """
@@ -547,7 +557,8 @@ class TestTADTabuleiro(unittest.TestCase):
             winner = self.valid_boards_winners[i]
 
             winner_result = target.obter_ganhador(board)
-            self.assertEqual(winner, target.peca_para_inteiro(winner_result))
+            self.assertEqual(winner, target.peca_para_inteiro(
+                winner_result), msg="Input: {}".format(board))
 
     def test_obter_posicoes_livres(self):
         """
@@ -561,7 +572,7 @@ class TestTADTabuleiro(unittest.TestCase):
 
             self.assertEqual(type(empty_positions_result), tuple)
             self.assertEqual(tuple(target.posicao_para_str(x)
-                                   for x in empty_positions_result), empty_positions)
+                                   for x in empty_positions_result), empty_positions, msg="Input: {}".format(board))
 
     def test_obter_posicoes_jogador(self):
         """
@@ -577,7 +588,7 @@ class TestTADTabuleiro(unittest.TestCase):
 
                 self.assertEqual(type(pos_result), tuple)
                 self.assertEqual(tuple(target.posicao_para_str(x)
-                                       for x in pos_result), pos)
+                                       for x in pos_result), pos, msg="Input: {}, {}".format(board, player))
 
 
 class TestsEnunciado(unittest.TestCase):
