@@ -306,6 +306,7 @@
       const ERROR_REGEX = /File ".+\/tests\/test.py", line (\d+), in (\w+)/g;
       const FUNCTION_REGEX = /^def (\w+)\([\w,* ]+\):/;
       const WHITE_SPACE = /^\s/;
+      const TRY_EXCEPT = /[\s\n]try:/;
       const FUNCTION_LENGTH_LIMIT = 40;
 
       const handleAdvancedErrorHandling = (output) => {
@@ -389,6 +390,9 @@
             `Function <code>${fn}</code> has ${lines} lines, which is over the ${FUNCTION_LENGTH_LIMIT} lines limit.`
           );
         });
+
+        if (TRY_EXCEPT.test(content))
+          warnings.push("The use of try/except is a bad practice.");
 
         document.getElementById("ascii-alert").innerHTML = warnings.join(
           "<br/>"
