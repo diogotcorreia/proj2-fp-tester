@@ -594,17 +594,54 @@ class TestTADTabuleiro(unittest.TestCase):
 class TestFuncoesAdicionais(unittest.TestCase):
 
     def setUp(self):
-        self.easyAuto = [(((-1, 0, 0), (1, 1, 0), (0, 0, 0)), 'O', ('c2',)),
-                         (((1, 1, 0), (1, -1, 0), (-1, 0, 0)), 'O', ('c1',)),
-                         (((1, 1, 0), (-1, -1, 0), (0, 0, 0)), 'X', ('c1',)),
-                         (((1, 1, 0), (-1, -1, 0), (0, 0, 0)), 'O', ('c2',)),
-                         (((-1, 0, 1), (1, -1, 0), (0, 0, 0)), 'X', ('a3',)),
-                         (((-1, 0, 1), (1, -1, 0), (0, 0, 0)), 'O', ('a3',)),
-                         (((0, -1, -1), (-1, 1, 0), (1, 0, 1)), 'X', ('b2', 'a1')),
-                         (((0, -1, 0), (-1, 1, 1), (-1, 0, 1)), 'X', ('b2', 'a1')),
-                         (((0, 1, 0), (-1, 1, 0), (-1, -1, 1)), 'X', ('b1', 'a1')),
-                         (((-1, 1, 0), (0, -1, 1), (-1, 0, 1)), 'O', ('a1', 'a2')),
-                         (((-1, 1, 0), (0, -1, 1), (-1, 0, 1)), 'X', ('b1', 'c1'))]
+        self.easyAuto = [
+            (((-1, 0, 0), (1, 1, 0), (0, 0, 0)), 'O', ('c2', )),
+            (((1, 1, 0), (1, -1, 0), (-1, 0, 0)), 'O', ('c1', )),
+            (((1, 1, 0), (-1, -1, 0), (0, 0, 0)), 'X', ('c1', )),
+            (((1, 1, 0), (-1, -1, 0), (0, 0, 0)), 'O', ('c2', )),
+            (((-1, 0, 1), (1, -1, 0), (0, 0, 0)), 'X', ('a3', )),
+            (((-1, 0, 1), (1, -1, 0), (0, 0, 0)), 'O', ('a3', )),
+            (((0, -1, -1), (-1, 1, 0), (1, 0, 1)), 'X', ('b2', 'a1')),
+            (((0, -1, 0), (-1, 1, 1), (-1, 0, 1)), 'X', ('b2', 'a1')),
+            (((0, 1, 0), (-1, 1, 0), (-1, -1, 1)), 'X', ('b1', 'a1')),
+            (((-1, 1, 0), (0, -1, 1), (-1, 0, 1)), 'O', ('a1', 'a2')),
+            (((-1, 1, 0), (0, -1, 1), (-1, 0, 1)), 'X', ('b1', 'c1'))
+        ]
+
+        self.normalAuto = [
+            (((-1, 0, 0), (1, 1, 0), (0, 0, 0)), 'O', ('c2', )),
+            (((1, 1, 0), (1, -1, 0), (-1, 0, 0)), 'O', ('c1', )),
+            (((1, 1, 0), (-1, -1, 0), (0, 0, 0)), 'X', ('c1', )),
+            (((1, 1, 0), (-1, -1, 0), (0, 0, 0)), 'O', ('c2', )),
+            (((-1, 0, 1), (1, -1, 0), (0, 0, 0)), 'X', ('a3', )),
+            (((-1, 0, 1), (1, -1, 0), (0, 0, 0)), 'O', ('a3', )),
+            (((0, -1, -1), (-1, 1, 0), (1, 0, 1)), 'X', ('b2', 'b3')),
+            (((0, -1, 0), (-1, 1, 1), (-1, 0, 1)), 'X', ('b2', 'c1')),
+            (((0, 1, -1), (0, 1, -1), (1, -1, 0)), 'X', ('b1', 'a1')),
+            (((-1, 1, 1), (1, -1, 0), (0, 0, -1)), 'O', ('b2', 'c2')),
+            (((-1, 1, 0), (0, 1, 0), (-1, -1, 1)), 'O', ('a1', 'a2')),
+            (((0, 1, 0), (-1, 1, 0), (-1, -1, 1)), 'X', ('b1', 'a1')),
+            (((0, 1, -1), (0, -1, 1), (-1, 0, 1)), 'O', ('b2', 'a1')),
+            (((-1, 1, 0), (0, -1, 1), (-1, 0, 1)), 'O', ('b2', 'a2')),
+            (((-1, 1, 0), (0, -1, 1), (-1, 0, 1)), 'X', ('b1', 'c1'))
+        ]
+
+        self.hardAuto = [
+            (((-1, 0, 0), (1, 1, 0), (0, 0, 0)), 'O', ('c2', )),
+            (((1, 1, 0), (1, -1, 0), (-1, 0, 0)), 'O', ('c1', )),
+            (((1, 1, 0), (-1, -1, 0), (0, 0, 0)), 'X', ('c1', )),
+            (((1, 1, 0), (-1, -1, 0), (0, 0, 0)), 'O', ('c2', )),
+            (((-1, 0, 1), (1, -1, 0), (0, 0, 0)), 'X', ('a3', )),
+            (((-1, 0, 1), (1, -1, 0), (0, 0, 0)), 'O', ('a3', )),
+            (((0, 1, -1), (0, 1, -1), (1, -1, 0)), 'X', ('b2', 'c3')),
+            (((-1, 1, 1), (1, -1, 0), (0, 0, -1)), 'O', ('c3', 'c2')),
+            (((-1, 1, 0), (0, 1, 0), (-1, -1, 1)), 'O', ('a3', 'a2')),
+            (((0, 1, 0), (-1, 1, 0), (-1, -1, 1)), 'O', ('a2', 'a1')),
+            (((0, 1, 0), (-1, 1, 0), (-1, -1, 1)), 'X', ('b1', 'c1')),
+            (((0, 1, -1), (0, -1, 1), (-1, 0, 1)), 'O', ('a3', 'b3')),
+            (((-1, 1, 0), (0, -1, 1), (-1, 0, 1)), 'O', ('b2', 'a2')),
+            (((-1, 1, 0), (0, -1, 1), (-1, 0, 1)), 'X', ('b1', 'c1'))
+        ]
 
     def test_obter_movimento_auto_facil(self):
         """
@@ -616,6 +653,38 @@ class TestFuncoesAdicionais(unittest.TestCase):
             player_obj = target.cria_peca(player)
             result = target.obter_movimento_auto(
                 board_obj, player_obj, 'facil')
+            self.assertEqual(type(result), tuple)
+            result_formatted = tuple(target.posicao_para_str(x)
+                                     for x in result)
+            self.assertEqual(correct_result, result_formatted,
+                             msg="Input: {}, {}".format(board, player))
+
+    def test_obter_movimento_auto_normal(self):
+        """
+        Testa obter_movimento_auto com a dificuldade 'normal'
+        """
+
+        for board, player, correct_result in self.normalAuto:
+            board_obj = target.tuplo_para_tabuleiro(board)
+            player_obj = target.cria_peca(player)
+            result = target.obter_movimento_auto(
+                board_obj, player_obj, 'normal')
+            self.assertEqual(type(result), tuple)
+            result_formatted = tuple(target.posicao_para_str(x)
+                                     for x in result)
+            self.assertEqual(correct_result, result_formatted,
+                             msg="Input: {}, {}".format(board, player))
+
+    def test_obter_movimento_auto_dificil(self):
+        """
+        Testa obter_movimento_auto com a dificuldade 'dificil'
+        """
+
+        for board, player, correct_result in self.normalAuto:
+            board_obj = target.tuplo_para_tabuleiro(board)
+            player_obj = target.cria_peca(player)
+            result = target.obter_movimento_auto(
+                board_obj, player_obj, 'dificil')
             self.assertEqual(type(result), tuple)
             result_formatted = tuple(target.posicao_para_str(x)
                                      for x in result)
