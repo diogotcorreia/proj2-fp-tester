@@ -149,7 +149,7 @@ class TestTADPosicao(unittest.TestCase):
         [*p1.values()].index('c') == [*p2.values()].index('c') and
         [*p1.values()].index('l') == [*p2.values()].index('l'),
         lambda p: ''.join([chr(k)
-                            for (k, v) in p.items() if v in ('c', 'l')][::-1])
+                           for (k, v) in p.items() if v in ('c', 'l')][::-1])
     )
 
     @patch.object(target, 'cria_posicao', side_effect=mocks[0])
@@ -619,7 +619,6 @@ class TestTADTabuleiro(unittest.TestCase):
         self.test_obter_posicoes_livres()
         self.test_obter_posicoes_jogador()
 
-
     mocks = TestTADPeca.mocks
 
     @patch.object(target, 'cria_peca', side_effect=mocks[0])
@@ -717,36 +716,6 @@ class TestFuncoesAdicionais(unittest.TestCase):
             self.assertEqual(correct_result, result_formatted,
                              msg="Input: {}, {}".format(board, player))
 
-    mocks = TestTADPosicao.mocks
-
-    @patch.object(target, 'cria_posicao', side_effect=mocks[0])
-    @patch.object(target, 'cria_copia_posicao', side_effect=mocks[1])
-    @patch.object(target, 'obter_pos_c', side_effect=mocks[2])
-    @patch.object(target, 'obter_pos_l', side_effect=mocks[3])
-    @patch.object(target, 'eh_posicao', side_effect=mocks[4])
-    @patch.object(target, 'posicoes_iguais', side_effect=mocks[5])
-    @patch.object(target, 'posicao_para_str', side_effect=mocks[6])
-    def test_abstracao_posicao_nas_adicionais(self, *_):
-        """
-        Testa as barreiras de abstração das funções adicionais em relação ao TAD posição
-        """
-        self.test_obter_movimento_auto_facil()
-
-
-    mocks = TestTADPeca.mocks
-
-    @patch.object(target, 'cria_peca', side_effect=mocks[0])
-    @patch.object(target, 'cria_copia_peca', side_effect=mocks[1])
-    @patch.object(target, 'eh_peca', side_effect=mocks[2])
-    @patch.object(target, 'pecas_iguais', side_effect=mocks[3])
-    @patch.object(target, 'peca_para_str', side_effect=mocks[4])
-    def test_abstracao_peca_nas_adicionais(self, *_):
-        """
-        Testa as barreiras de abstração das funções adicionais em relação ao TAD peca
-        """
-        self.test_obter_movimento_auto_facil()
-
-
     def test_obter_movimento_auto_normal(self):
         """
         Testa obter_movimento_auto com a dificuldade 'normal'
@@ -768,7 +737,7 @@ class TestFuncoesAdicionais(unittest.TestCase):
         Testa obter_movimento_auto com a dificuldade 'dificil'
         """
 
-        for board, player, correct_result in self.normalAuto:
+        for board, player, correct_result in self.hardAuto:
             board_obj = target.tuplo_para_tabuleiro(board)
             player_obj = target.cria_peca(player)
             result = target.obter_movimento_auto(
@@ -778,6 +747,34 @@ class TestFuncoesAdicionais(unittest.TestCase):
                                      for x in result)
             self.assertEqual(correct_result, result_formatted,
                              msg="Input: {}, {}".format(board, player))
+
+    mocks = TestTADPosicao.mocks
+
+    @patch.object(target, 'cria_posicao', side_effect=mocks[0])
+    @patch.object(target, 'cria_copia_posicao', side_effect=mocks[1])
+    @patch.object(target, 'obter_pos_c', side_effect=mocks[2])
+    @patch.object(target, 'obter_pos_l', side_effect=mocks[3])
+    @patch.object(target, 'eh_posicao', side_effect=mocks[4])
+    @patch.object(target, 'posicoes_iguais', side_effect=mocks[5])
+    @patch.object(target, 'posicao_para_str', side_effect=mocks[6])
+    def test_abstracao_posicao_nas_adicionais(self, *_):
+        """
+        Testa as barreiras de abstração das funções adicionais em relação ao TAD posição
+        """
+        self.test_obter_movimento_auto_facil()
+
+    mocks = TestTADPeca.mocks
+
+    @patch.object(target, 'cria_peca', side_effect=mocks[0])
+    @patch.object(target, 'cria_copia_peca', side_effect=mocks[1])
+    @patch.object(target, 'eh_peca', side_effect=mocks[2])
+    @patch.object(target, 'pecas_iguais', side_effect=mocks[3])
+    @patch.object(target, 'peca_para_str', side_effect=mocks[4])
+    def test_abstracao_peca_nas_adicionais(self, *_):
+        """
+        Testa as barreiras de abstração das funções adicionais em relação ao TAD peca
+        """
+        self.test_obter_movimento_auto_facil()
 
 
 class TestsEnunciado(unittest.TestCase):
