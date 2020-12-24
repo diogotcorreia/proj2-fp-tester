@@ -42,9 +42,9 @@ app.post("/run", async (req, res) => {
   });
 
   setTimeout(() => {
-    result += "Max timeout exceeded (3s). Program killed.";
+    result += "Max timeout exceeded (10s). Program killed.";
     pythonProcess.kill();
-  }, 3000);
+  }, 10000);
 });
 
 app.listen(process.env.PORT || 5000);
