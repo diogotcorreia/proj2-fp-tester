@@ -591,6 +591,38 @@ class TestTADTabuleiro(unittest.TestCase):
                                        for x in pos_result), pos, msg="Input: {}, {}".format(board, player))
 
 
+class TestFuncoesAdicionais(unittest.TestCase):
+
+    def setUp(self):
+        self.easyAuto = [(((-1, 0, 0), (1, 1, 0), (0, 0, 0)), 'O', ('c2',)),
+                         (((1, 1, 0), (1, -1, 0), (-1, 0, 0)), 'O', ('c1',)),
+                         (((1, 1, 0), (-1, -1, 0), (0, 0, 0)), 'X', ('c1',)),
+                         (((1, 1, 0), (-1, -1, 0), (0, 0, 0)), 'O', ('c2',)),
+                         (((-1, 0, 1), (1, -1, 0), (0, 0, 0)), 'X', ('a3',)),
+                         (((-1, 0, 1), (1, -1, 0), (0, 0, 0)), 'O', ('a3',)),
+                         (((0, -1, -1), (-1, 1, 0), (1, 0, 1)), 'X', ('b2', 'a1')),
+                         (((0, -1, 0), (-1, 1, 1), (-1, 0, 1)), 'X', ('b2', 'a1')),
+                         (((0, 1, 0), (-1, 1, 0), (-1, -1, 1)), 'X', ('b1', 'a1')),
+                         (((-1, 1, 0), (0, -1, 1), (-1, 0, 1)), 'O', ('a1', 'a2')),
+                         (((-1, 1, 0), (0, -1, 1), (-1, 0, 1)), 'X', ('b1', 'c1'))]
+
+    def test_obter_movimento_auto_facil(self):
+        """
+        Testa obter_movimento_auto com a dificuldade 'facil'
+        """
+
+        for board, player, correct_result in self.easyAuto:
+            board_obj = target.tuplo_para_tabuleiro(board)
+            player_obj = target.cria_peca(player)
+            result = target.obter_movimento_auto(
+                board_obj, player_obj, 'facil')
+            self.assertEqual(type(result), tuple)
+            result_formatted = tuple(target.posicao_para_str(x)
+                                     for x in result)
+            self.assertEqual(correct_result, result_formatted,
+                             msg="Input: {}, {}".format(board, player))
+
+
 class TestsEnunciado(unittest.TestCase):
     def test_tabuleiro_para_str(self):
         """
