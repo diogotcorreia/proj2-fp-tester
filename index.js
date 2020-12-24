@@ -8,9 +8,11 @@ const spawn = require("child_process").spawn;
 
 app.use(bodyParser.text());
 
-app.get("/", (req, res) => {
+app.get("/", (_req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
+
+app.use("/assets", express.static(path.join(__dirname, "assets")));
 
 app.post("/run", async (req, res) => {
   const uuid = uuidv4();

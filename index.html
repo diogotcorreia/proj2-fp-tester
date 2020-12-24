@@ -8,13 +8,24 @@
       href="https://fonts.googleapis.com/css2?family=Roboto&display=swap"
       rel="stylesheet"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/tonsky/FiraCode@4/distr/fira_code.css"
+    />
+    <link rel="stylesheet" href="/assets/styles/stackoverflow-dark.css" />
+    <script src="/assets/highlight.pack.js"></script>
     <style>
       html,
       body,
       input,
       textarea {
-        background-color: #202124;
+        background-color: #1c1b1b;
         color: #e8eaed;
+      }
+      input,
+      textarea,
+      pre {
+        font-family: "Fira Code", monospace;
       }
       html,
       body {
@@ -29,6 +40,24 @@
       }
       .content > div {
         margin-right: 16px;
+      }
+      .result {
+        overflow-y: auto;
+        border: solid 1px rgb(118, 118, 118);
+        width: 600px;
+        height: 484px;
+        position: relative;
+      }
+      #result {
+        width: 100%;
+        overflow: hidden;
+        box-sizing: border-box;
+        white-space: pre-wrap; /* css-3 */
+        white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+        white-space: -pre-wrap; /* Opera 4-6 */
+        white-space: -o-pre-wrap; /* Opera 7 */
+        word-wrap: break-word; /* Internet Explorer 5.5+ */
+        font-size: 85%;
       }
       button {
         background-color: #00aef8;
@@ -55,6 +84,14 @@
         padding: 5px;
         text-align: left;
         border-bottom: 1px solid #444;
+      }
+      code {
+        font-family: "Fira Code", monospace;
+        padding: 0.2em 0.4em;
+        margin: 0;
+        font-size: 85%;
+        background-color: rgba(240, 246, 252, 0.05);
+        border-radius: 6px;
       }
     </style>
   </head>
@@ -89,12 +126,9 @@
       </div>
       <div>
         <p>Output:</p>
-        <textarea
-          id="result"
-          readonly="readonly"
-          rows="30"
-          cols="80"
-        ></textarea>
+        <div class="result">
+          <pre id="result" class="language-python"></pre>
+        </div>
       </div>
     </div>
     <br />
@@ -441,7 +475,8 @@
         });
         button.disabled = false;
         const result = document.getElementById("result");
-        result.value = response.data;
+        result.innerText = response.data;
+        hljs.highlightBlock(result);
         const lastrun = document.getElementById("last-run");
         lastrun.innerText = new Date().toLocaleString();
 
