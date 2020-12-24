@@ -600,7 +600,7 @@ class TestTADTabuleiro(unittest.TestCase):
     @patch.object(target, 'posicao_para_str', side_effect=mocks[6])
     def test_abstracao_posicao_no_tabuleiro(self, *_):
         """
-        Testa as barreiras de abstração do TAD tabueleiro em relação ao TAD posição
+        Testa as barreiras de abstração do TAD tabuleiro em relação ao TAD posição
         """
         self.test_cria_tabuleiro()
         self.test_cria_copia_tabuleiro()
@@ -628,7 +628,7 @@ class TestTADTabuleiro(unittest.TestCase):
     @patch.object(target, 'peca_para_str', side_effect=mocks[4])
     def test_abstracao_peca_no_tabuleiro(self, *_):
         """
-        Testa as barreiras de abstração do TAD tabueleiro em relação ao TAD peca
+        Testa as barreiras de abstração do TAD tabuleiro em relação ao TAD peca
         """
         self.test_cria_tabuleiro()
         self.test_cria_copia_tabuleiro()
@@ -762,6 +762,9 @@ class TestFuncoesAdicionais(unittest.TestCase):
         Testa as barreiras de abstração das funções adicionais em relação ao TAD posição
         """
         self.test_obter_movimento_auto_facil()
+        self.test_obter_movimento_auto_normal()
+        self.test_obter_movimento_auto_dificil()
+
 
     mocks = TestTADPeca.mocks
 
@@ -775,6 +778,8 @@ class TestFuncoesAdicionais(unittest.TestCase):
         Testa as barreiras de abstração das funções adicionais em relação ao TAD peca
         """
         self.test_obter_movimento_auto_facil()
+        self.test_obter_movimento_auto_normal()
+        self.test_obter_movimento_auto_dificil()
 
 
 class TestsEnunciado(unittest.TestCase):
