@@ -9,7 +9,7 @@ const io = require('socket.io')(server);
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
 app.use("/assets", express.static(path.join(__dirname, "assets")));
 
-const timeout = 5;
+const timeout = 60;
 
 let processes = {};
 let timer = undefined;
@@ -30,17 +30,7 @@ io.on('connection', socket => {
         child = spawn('python3.5', ['-u', path.join(__dirname, 'tests', 'test.py')]);
         processes[socket.id] = child;
 
-        newTimer = () => setTimeout(() => {
-            child.kill();
-            socket.emit('result', '\ntimeout :(');
-        }, timeout*1000);
-        timer = newTimer();
-
-        result = (data) => {
-            socket.emit('result', data.toString());
-            clearTimeout(timer);
-            timer = newTimer();
-        }
+        result = (data) => socket.emit('result', data.toString());
         child.stdout.on('data', result);
         child.stderr.on('data', result);
 
@@ -48,7 +38,12 @@ io.on('connection', socket => {
         child.stdin.end()
 
         child.on('close', () => closeProcess(socket, processes, timer));
-    });
+
+        timer = setTimeout(() => {
+            child.kill();
+            socket.emit('result', 'timeout :(');
+        }, timeout*1000);
+    })
 
     socket.on('disconnect', () => {
         if(processes[socket.id]) closeProcess(socket, processes, timer);
