@@ -1,16 +1,13 @@
 const fs = require('fs');
-const path = require('path')
+const path = require('path');
 const spawn = require('child_process').spawn;
-const http = require('http');
+const express = require('express');
+const app = express();
+const server = require('http').createServer(app);
+const io = require('socket.io')(server);
 
-const content = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
-const httpServer = http.createServer((req, res) => {
-  res.setHeader('Content-Type', 'text/html');
-  res.setHeader('Content-Length', Buffer.byteLength(content));
-  res.end(content);
-});
-
-const io = require('socket.io')(httpServer);
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
+app.use("/assets", express.static(path.join(__dirname, "assets")));
 
 const timeout = 60;
 
@@ -20,6 +17,7 @@ let timer = undefined;
 const closeProcess = (socket, processes, timer) => {
     processes[socket.id].kill();
     if(timer) clearTimeout(timer)
+    socket.emit('done')
 }
 
 io.on('connection', socket => {
@@ -53,9 +51,9 @@ io.on('connection', socket => {
 
 });
 
-httpServer.listen(process.env.PORT || 5000, () => {;
-    console.log(
-    `Listening on port ${ process.env.PORT || 5000 }.
-    You can change this by passing a value to the PORT environment variable.`
-    );
-});
+server.listen(process.env.PORT || 5000);
+console.log(
+  `Listening on port ${
+    process.env.PORT || 5000
+  }. You can change this by passing a value to the PORT environment variable.`
+);
