@@ -1,55 +1,61 @@
-const express = require("express");
-const fs = require("fs").promises;
-const bodyParser = require("body-parser");
-const { v4: uuidv4 } = require("uuid");
-const app = express();
-const path = require("path");
-const spawn = require("child_process").spawn;
+const fs = require('fs');
+const path = require('path')
+const spawn = require('child_process').spawn;
+const http = require('http');
 
-app.use(bodyParser.text());
-
-app.get("/", (_req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
+const content = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
+const httpServer = http.createServer((req, res) => {
+  res.setHeader('Content-Type', 'text/html');
+  res.setHeader('Content-Length', Buffer.byteLength(content));
+  res.end(content);
 });
 
-app.use("/assets", express.static(path.join(__dirname, "assets")));
+const io = require('socket.io')(httpServer);
 
-app.post("/run", async (req, res) => {
-  const uuid = uuidv4();
-  const filePath = path.join(__dirname, "tests", `runner-${uuid}.py`);
-  await fs.writeFile(filePath, req.body);
+const timeout = 60;
 
-  const pythonProcess = spawn("python3.5", [
-    path.join(__dirname, "tests", "test.py"),
-    `runner-${uuid}`,
-  ]);
+let processes = {};
+let timer = undefined;
 
-  let result = "";
+const closeProcess = (socket, processes, timer) => {
+    processes[socket.id].kill();
+    if(timer) clearTimeout(timer)
+}
 
-  const handleData = (data) => {
-    str = data.toString();
-    if (/\.+/.test(str)) result += str;
-    else result += str + "\n";
-  };
+io.on('connection', socket => {
 
-  pythonProcess.stdout.on("data", handleData);
+    socket.on('submit', code => {
 
-  pythonProcess.stderr.on("data", handleData);
+        if(processes[socket.id]) closeProcess(socket, processes, timer);
+        socket.emit('clear');
 
-  pythonProcess.on("close", async () => {
-    await fs.unlink(filePath);
-    res.send(result);
-  });
+        child = spawn('python3.5', ['-u', path.join(__dirname, 'tests', 'test.py')]);
+        processes[socket.id] = child;
 
-  setTimeout(() => {
-    result += "Max timeout exceeded (10s). Program killed.";
-    pythonProcess.kill();
-  }, 10000);
+        result = (data) => socket.emit('result', data.toString());
+        child.stdout.on('data', result);
+        child.stderr.on('data', result);
+
+        child.stdin.write(code)
+        child.stdin.end()
+
+        child.on('close', () => closeProcess(socket, processes, timer));
+
+        timer = setTimeout(() => {
+            child.kill();
+            socket.emit('result', 'timeout :(');
+        }, timeout*1000);
+    })
+
+    socket.on('disconnect', () => {
+        if(processes[socket.id]) closeProcess(socket, processes, timer);
+    });
+
 });
 
-app.listen(process.env.PORT || 5000);
-console.log(
-  `Listening on port ${
-    process.env.PORT || 5000
-  }. You can change this by passing a value to the PORT environment variable.`
-);
+httpServer.listen(process.env.PORT || 5000, () => {;
+    console.log(
+    `Listening on port ${ process.env.PORT || 5000 }.
+    You can change this by passing a value to the PORT environment variable.`
+    );
+});
