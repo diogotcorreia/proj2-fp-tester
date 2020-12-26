@@ -577,9 +577,15 @@
       socket.on('result', (data) => {
 
           result.innerText += data;
-          hljs.highlightBlock(result);
 
       })
+
+      socket.on('done', () => {
+
+          hljs.highlightBlock(result);
+          handleAdvancedErrorHandling(result.innerText)
+
+      });
 
     </script>
   </body>
