@@ -4,6 +4,8 @@ import sys
 import importlib.util
 from io import StringIO
 
+ENABLE_MOCK_TESTING = len(sys.argv) >= 2 and sys.argv[1] == "True"
+
 target_spec = importlib.util.spec_from_loader('target', loader=None)
 target = importlib.util.module_from_spec(target_spec)
 exec(sys.stdin.read(), target.__dict__)
@@ -153,6 +155,7 @@ class TestTADPosicao(unittest.TestCase):
                            for (k, v) in p.items() if v in ('c', 'l')][::-1])
     )
 
+    @unittest.skipUnless(ENABLE_MOCK_TESTING, "skipping mock tests")
     @patch.object(target, 'cria_posicao', side_effect=mocks[0])
     @patch.object(target, 'cria_copia_posicao', side_effect=mocks[1])
     @patch.object(target, 'obter_pos_c', side_effect=mocks[2])
@@ -279,6 +282,7 @@ class TestTADPeca(unittest.TestCase):
             [chr(n) if n != 92 else chr(ord(j['foo'][-1]) + 1) for n in range(91, 94)])
     )
 
+    @unittest.skipUnless(ENABLE_MOCK_TESTING, "skipping mock tests")
     @patch.object(target, 'cria_peca', side_effect=mocks[0])
     @patch.object(target, 'cria_copia_peca', side_effect=mocks[1])
     @patch.object(target, 'eh_peca', side_effect=mocks[2])
@@ -592,6 +596,7 @@ class TestTADTabuleiro(unittest.TestCase):
 
     mocks = TestTADPosicao.mocks
 
+    @unittest.skipUnless(ENABLE_MOCK_TESTING, "skipping mock tests")
     @patch.object(target, 'cria_posicao', side_effect=mocks[0])
     @patch.object(target, 'cria_copia_posicao', side_effect=mocks[1])
     @patch.object(target, 'obter_pos_c', side_effect=mocks[2])
@@ -622,6 +627,7 @@ class TestTADTabuleiro(unittest.TestCase):
 
     mocks = TestTADPeca.mocks
 
+    @unittest.skipUnless(ENABLE_MOCK_TESTING, "skipping mock tests")
     @patch.object(target, 'cria_peca', side_effect=mocks[0])
     @patch.object(target, 'cria_copia_peca', side_effect=mocks[1])
     @patch.object(target, 'eh_peca', side_effect=mocks[2])
@@ -860,16 +866,17 @@ class TestFuncoesAdicionais(unittest.TestCase):
             self.assertEqual(correct_result, result_formatted,
                              msg="Input: {}, {}".format(board, player))
 
-    #mocks = TestTADPosicao.mocks
+    mocks = TestTADPosicao.mocks
 
-    # @patch.object(target, 'cria_posicao', side_effect=mocks[0])
-    # @patch.object(target, 'cria_copia_posicao', side_effect=mocks[1])
-    # @patch.object(target, 'obter_pos_c', side_effect=mocks[2])
-    # @patch.object(target, 'obter_pos_l', side_effect=mocks[3])
-    # @patch.object(target, 'eh_posicao', side_effect=mocks[4])
-    # @patch.object(target, 'posicoes_iguais', side_effect=mocks[5])
-    # @patch.object(target, 'posicao_para_str', side_effect=mocks[6])
-    def _test_abstracao_posicao_nas_adicionais(self, *_):
+    @unittest.skipUnless(ENABLE_MOCK_TESTING, "skipping mock tests")
+    @patch.object(target, 'cria_posicao', side_effect=mocks[0])
+    @patch.object(target, 'cria_copia_posicao', side_effect=mocks[1])
+    @patch.object(target, 'obter_pos_c', side_effect=mocks[2])
+    @patch.object(target, 'obter_pos_l', side_effect=mocks[3])
+    @patch.object(target, 'eh_posicao', side_effect=mocks[4])
+    @patch.object(target, 'posicoes_iguais', side_effect=mocks[5])
+    @patch.object(target, 'posicao_para_str', side_effect=mocks[6])
+    def test_abstracao_posicao_nas_adicionais(self, *_):
         """
         Testa as barreiras de abstração das funções adicionais em relação ao TAD posição
         """
@@ -877,14 +884,15 @@ class TestFuncoesAdicionais(unittest.TestCase):
         self.test_obter_movimento_auto_normal()
         self.test_obter_movimento_auto_dificil()
 
-    #mocks = TestTADPeca.mocks
+    mocks = TestTADPeca.mocks
 
-    # @patch.object(target, 'cria_peca', side_effect=mocks[0])
-    # @patch.object(target, 'cria_copia_peca', side_effect=mocks[1])
-    # @patch.object(target, 'eh_peca', side_effect=mocks[2])
-    # @patch.object(target, 'pecas_iguais', side_effect=mocks[3])
-    # @patch.object(target, 'peca_para_str', side_effect=mocks[4])
-    def _test_abstracao_peca_nas_adicionais(self, *_):
+    @unittest.skipUnless(ENABLE_MOCK_TESTING, "skipping mock tests")
+    @patch.object(target, 'cria_peca', side_effect=mocks[0])
+    @patch.object(target, 'cria_copia_peca', side_effect=mocks[1])
+    @patch.object(target, 'eh_peca', side_effect=mocks[2])
+    @patch.object(target, 'pecas_iguais', side_effect=mocks[3])
+    @patch.object(target, 'peca_para_str', side_effect=mocks[4])
+    def test_abstracao_peca_nas_adicionais(self, *_):
         """
         Testa as barreiras de abstração das funções adicionais em relação ao TAD peca
         """

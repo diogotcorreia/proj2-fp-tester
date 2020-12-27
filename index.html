@@ -74,6 +74,9 @@
         margin-right: 8px;
         margin-bottom: 16px;
       }
+      #kill {
+        background-color: #ff6961;
+      }
       .warning {
         color: rgb(255, 213, 153);
         background-color: rgb(25, 15, 0);
@@ -118,8 +121,10 @@
           <textarea id="code" rows="30" cols="80"></textarea>
         </div>
         <div>
-          <button id="submit" disabled>Run tests</button>
+          <button id="submit">Run tests</button>
           <button id="kill" style="display: none">Kill execution</button>
+          <input type="checkbox" id="skipMocks" checked />
+          <label for="skipMocks">Skip abstraction tests</label>
         </div>
         <span class="warning">Test execution can take up to 2 minutes.</span>
         <p>
@@ -460,10 +465,7 @@
         </tr>
         <tr>
           <td>
-            <del
-              >Abstração Procedimental Posição
-              (<code>escolher_posicao_auto</code>)</del
-            >
+            Abstração Procedimental Posição (<code>escolher_posicao_auto</code>)
           </td>
           <td>11 + 15 + 14 = 40</td>
           <td>
@@ -474,10 +476,7 @@
         </tr>
         <tr>
           <td>
-            <del>
-              Abstração Procedimental Peça
-              (<code>escolher_posicao_auto</code>)</del
-            >
+            Abstração Procedimental Peça (<code>escolher_posicao_auto</code>)
           </td>
           <td>11 + 15 + 14 = 40</td>
           <td>
@@ -537,6 +536,7 @@
       const result = document.getElementById("result");
       const submit = document.getElementById("submit");
       const killBtn = document.getElementById("kill");
+      const skipMocks = document.getElementById("skipMocks");
 
       const socket = io();
 
@@ -544,13 +544,13 @@
         socket.emit("kill");
       };
 
-      socket.on("connect", () => (submit.disabled = false));
+      socket.on("connect", () => (submit.style.display = "inline-block"));
 
       submit.onclick = async () => {
         const content = document.getElementById("code").value;
 
-        socket.emit("submit", content);
-        submit.disabled = true;
+        socket.emit("submit", content, skipMocks.checked);
+        submit.style.display = "none";
         killBtn.style.display = "inline-block";
 
         const lastrun = document.getElementById("last-run");
@@ -611,7 +611,7 @@
         hljs.highlightBlock(result);
         handleAdvancedErrorHandling(result.innerText);
         killBtn.style.display = "none";
-        submit.disabled = false;
+        submit.style.display = "inline-block";
       });
     </script>
   </body>

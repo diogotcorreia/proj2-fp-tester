@@ -26,15 +26,23 @@ const closeProcess = (socket, processes, timer) => {
 };
 
 io.on("connection", (socket) => {
-  socket.on("submit", (code) => {
+  socket.on("submit", (code, skipMocks) => {
     if (processes[socket.id]) closeProcess(socket, processes, timer);
     socket.emit("clear");
 
-    socket.emit("result", "[Mooshak da Feira] Executing tests...\n\n");
+    socket.emit(
+      "result",
+      `[Mooshak da Feira] Executing tests... ${
+        skipMocks
+          ? "(skipping abstraction tests)"
+          : "(testing abstraction; might take up to 2 minutes)"
+      }\n\n`
+    );
 
     child = spawn("python3.5", [
       "-u",
       path.join(__dirname, "tests", "test.py"),
+      skipMocks ? "False" : "True",
     ]);
     processes[socket.id] = child;
 
