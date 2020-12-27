@@ -3,6 +3,7 @@ from unittest.mock import patch
 import sys
 import importlib.util
 from io import StringIO
+import os
 
 ENABLE_MOCK_TESTING = len(sys.argv) >= 2 and sys.argv[1] == "True"
 
@@ -752,6 +753,12 @@ class TestFuncoesAdicionais(unittest.TestCase):
             (((-1, 1, 0), (0, -1, 1), (-1, 0, 1)), 'X', ('b1', 'c1'))
         ]
 
+        self.moinho = [
+            # output file name, difficulty, starting player, moves, winner
+            ('moinho_1.txt', 'facil',
+             '[X]', ('a2', 'a1', 'c1', 'c1c2', 'a1b1', 'b1b2'), '[X]')
+        ]
+
     def test_obter_movimento_manual_fail(self):
         """
         Testa obter_movimento_manual com inputs inválidos
@@ -865,6 +872,36 @@ class TestFuncoesAdicionais(unittest.TestCase):
                                      for x in result)
             self.assertEqual(correct_result, result_formatted,
                              msg="Input: {}, {}".format(board, player))
+
+    def test_moinho(self):
+        """
+        Testa a função moinho, jogando um jogo completo do jogo do moinho.
+        """
+
+        for out_file, difficulty, player, moves, winner in self.moinho:
+            with open(os.path.join(os.path.dirname(__file__), 'moinho_outputs', out_file), 'r') as f:
+                out = f.read()
+                sys.stdin = StringIO('\n'.join(moves))
+                sys.stdout = StringIO()
+                try:
+                    result = target.moinho(player, difficulty)
+
+                    sys.stdout.seek(0, 0)
+                    stdout_text = sys.stdout.read()
+
+                    self.assertEqual(stdout_text, out,
+                                     msg="Moinho test: {}".format(out_file))
+
+                    self.assertEqual(result, winner,
+                                     msg="Moinho test: {}".format(out_file))
+                except Exception as e:
+                    self.fail(
+                        "moinho threw exception when it should not have. Moinho test: {}".format(out_file))
+                finally:
+                    sys.stdout.close()
+                    sys.stdin.close()
+                    sys.stdout = sys.__stdout__
+                    sys.stdin = sys.__stdin__
 
     mocks = TestTADPosicao.mocks
 
