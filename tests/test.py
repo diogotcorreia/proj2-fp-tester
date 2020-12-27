@@ -2,10 +2,12 @@ import unittest
 from unittest.mock import patch
 import sys
 import importlib.util
+from io import StringIO
 
 target_spec = importlib.util.spec_from_loader('target', loader=None)
 target = importlib.util.module_from_spec(target_spec)
 exec(sys.stdin.read(), target.__dict__)
+
 
 class TestTADPosicao(unittest.TestCase):
 
@@ -650,6 +652,51 @@ class TestTADTabuleiro(unittest.TestCase):
 class TestFuncoesAdicionais(unittest.TestCase):
 
     def setUp(self):
+        self.manualFail = [
+            (((0, 0, 0), (0, 0, 0), (0, 0, 0)), 'X', 'aa2', False),
+            (((0, 0, 0), (0, 0, 0), (0, 0, 0)), 'O', 'moinho', False),
+            (((0, 0, 0), (0, 0, 0), (0, 0, 0)), 'O', ' ', False),
+            (((0, 0, 0), (0, 0, 0), (0, 0, 0)), 'X', 'd3', False),
+            (((0, 0, 0), (0, 0, 0), (0, 0, 0)), 'O', 'a4', False),
+            (((0, 0, 0), (0, 0, 0), (0, 0, 0)), 'X', 'ab', False),
+            (((0, 0, 0), (0, 0, 0), (0, 0, 0)), 'O', 'A3', False),
+            (((1, -1, 0), (0, 0, 0), (0, 0, 0)), 'X', 'a1', False),
+            (((1, 0, 0), (0, 0, -1), (0, 0, 0)), 'X', 'c2', False),
+            (((1, -1, 0), (0, -1, 1), (1, 0, 0)), 'O', 'b1', False),
+            (((1, -1, 0), (0, -1, 1), (-1, 0, 1)), 'X', 'c1', True),
+            (((1, -1, 0), (0, 0, 0), (0, 0, 0)), 'O', 'a1', False),
+            (((1, 0, 0), (0, 0, -1), (0, 0, 0)), 'O', 'c2', False),
+            (((1, -1, 0), (0, -1, 1), (1, 0, 0)), 'O', 'b1c1', False),
+            (((1, 0, 0), (0, 0, -1), (0, 0, 0)), 'O', 'c2c1', False),
+            (((1, -1, 0), (0, -1, 1), (1, 0, -1)), 'X', ' ', True),
+            (((1, -1, 0), (0, -1, 1), (1, 0, -1)), 'O', 'ola', True),
+            (((1, -1, 0), (0, -1, 1), (1, 0, -1)), 'O', 'c1', True),
+            (((1, -1, 0), (0, -1, 1), (1, 0, -1)), 'O', 'aaaa', True),
+            (((1, -1, 0), (0, -1, 1), (1, 0, -1)), 'X', '3231', True),
+            (((1, -1, 0), (0, -1, 1), (1, 0, -1)), 'O', '3a2a', True),
+            (((1, -1, 0), (0, -1, 1), (1, 0, -1)), 'O', 'a2b2', True),
+            (((1, -1, 0), (0, -1, 1), (1, 0, -1)), 'X', 'a1b1', True),
+            (((1, -1, 0), (0, -1, 1), (1, 0, -1)), 'X', 'c2b3', True),
+            (((1, -1, 0), (0, -1, 1), (1, 0, -1)), 'X', 'a1a1', True),
+        ]
+
+        self.manualSuccess = [
+            (((0, 0, 0), (0, 0, 0), (0, 0, 0)), 'X', 'a2', False, ('a2', )),
+            (((0, 0, 0), (0, 0, 0), (0, 0, 0)), 'O', 'c3', False, ('c3', )),
+            (((0, 0, 0), (0, 0, 0), (0, 0, 0)), 'X', 'b2', False, ('b2', )),
+            (((0, 0, 0), (0, 0, 0), (0, 0, 0)), 'O', 'a3', False, ('a3', )),
+            (((1, -1, 0), (0, 0, 0), (0, 0, 0)), 'X', 'a3', False, ('a3', )),
+            (((1, -1, 0), (0, -1, 1), (1, 0, 0)), 'O', 'c3', False, ('c3', )),
+            (((1, -1, 0), (0, -1, 1), (-1, 0, 1)), 'X', 'c3b3', True, ('c3', 'b3')),
+            (((1, -1, 0), (0, -1, 1), (1, 0, -1)), 'X', 'a1a2', True, ('a1', 'a2')),
+            (((1, -1, 0), (0, -1, 1), (1, 0, -1)), 'O', 'c3b3', True, ('c3', 'b3')),
+            (((1, -1, 0), (0, -1, 1), (1, 0, -1)), 'O', 'b2a2', True, ('b2', 'a2')),
+            (((-1, -1, 1), (-1, 1, 0), (1, 0, 0)), 'O', 'a1a1', True, ('a1', 'a1')),
+            (((-1, -1, 1), (-1, 1, 0), (1, 0, 0)), 'O', 'b1b1', True, ('b1', 'b1')),
+            (((0, 0, -1), (0, -1, 1), (-1, 1, 1)), 'X', 'b3b3', True, ('b3', 'b3')),
+            (((0, 0, -1), (0, -1, 1), (-1, 1, 1)), 'O', 'b2a2', True, ('b2', 'a2')),
+        ]
+
         self.easyAuto = [
             (((-1, 0, 0), (1, 1, 0), (0, 0, 0)), 'O', ('c2', )),
             (((1, 1, 0), (1, -1, 0), (-1, 0, 0)), 'O', ('c1', )),
@@ -698,6 +745,72 @@ class TestFuncoesAdicionais(unittest.TestCase):
             (((-1, 1, 0), (0, -1, 1), (-1, 0, 1)), 'O', ('b2', 'a2')),
             (((-1, 1, 0), (0, -1, 1), (-1, 0, 1)), 'X', ('b1', 'c1'))
         ]
+
+    def test_obter_movimento_manual_fail(self):
+        """
+        Testa obter_movimento_manual com inputs inválidos
+        """
+        for board, player, mov, is_mov in self.manualFail:
+            board_obj = target.tuplo_para_tabuleiro(board)
+            player_obj = target.cria_peca(player)
+            with self.assertRaises(ValueError, msg="Input: {}, {}, {}".format(board, player, mov)) as ctx:
+                sys.stdin = StringIO(mov)
+                sys.stdout = StringIO()
+                result_stdout = sys.stdout
+                target.obter_movimento_manual(board_obj, player_obj)
+
+            sys.stdout.seek(0, 0)
+            stdout_text = sys.stdout.read()
+
+            sys.stdout.close()
+            sys.stdin.close()
+            sys.stdout = sys.__stdout__
+            sys.stdin = sys.__stdin__
+
+            if is_mov:
+                self.assertEqual(stdout_text,
+                                 'Turno do jogador. Escolha um movimento: ', msg="Input: {}, {}, {}".format(board, player, mov))
+            else:
+                self.assertEqual(stdout_text,
+                                 'Turno do jogador. Escolha uma posicao: ', msg="Input: {}, {}, {}".format(board, player, mov))
+            self.assertEqual(
+                'obter_movimento_manual: escolha invalida', str(ctx.exception), msg="Input: {}, {}, {}".format(board, player, mov))
+
+    def test_obter_movimento_manual_success(self):
+        """
+        Testa obter_movimento_manual com inputs válidos
+        """
+        for board, player, mov, is_mov, correct_result in self.manualSuccess:
+            board_obj = target.tuplo_para_tabuleiro(board)
+            player_obj = target.cria_peca(player)
+            sys.stdin = StringIO(mov)
+            sys.stdout = StringIO()
+            try:
+                result = target.obter_movimento_manual(board_obj, player_obj)
+
+                sys.stdout.seek(0, 0)
+                stdout_text = sys.stdout.read()
+
+                if is_mov:
+                    self.assertEqual(stdout_text,
+                                     'Turno do jogador. Escolha um movimento: ', msg="Input: {}, {}, {}".format(board, player, mov))
+                else:
+                    self.assertEqual(stdout_text,
+                                     'Turno do jogador. Escolha uma posicao: ', msg="Input: {}, {}, {}".format(board, player, mov))
+
+                self.assertEqual(type(result), tuple)
+                result_formatted = tuple(target.posicao_para_str(x)
+                                         for x in result)
+                self.assertEqual(correct_result, result_formatted,
+                                 msg="Input: {}, {}, {}".format(board, player, mov))
+            except Exception as e:
+                self.fail("obter_movimento_manual threw exception when it should not have. Input: {}, {}, {}".format(
+                    board, player, mov))
+            finally:
+                sys.stdout.close()
+                sys.stdin.close()
+                sys.stdout = sys.__stdout__
+                sys.stdin = sys.__stdin__
 
     def test_obter_movimento_auto_facil(self):
         """
