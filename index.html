@@ -115,7 +115,7 @@
           <p>Paste your file contents below:</p>
           <textarea id="code" rows="30" cols="80"></textarea>
         </div>
-        <button id="submit">Run tests</button>
+        <button id="submit" disabled>Run tests</button>
 
         <span class="warning">Test execution can take up to 5 seconds.</span>
         <p>
@@ -463,7 +463,7 @@
       <p>There are some other tests that aren't in this list yet.</p>
     </div>
 
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <script>
       const TEST_FILE_LINK =
         "https://github.com/diogotcorreia/proj2-fp-tester/blob/master/tests/test.py";
@@ -507,64 +507,86 @@
         return functions;
       };
 
-      document.getElementById("submit").onclick = async () => {
-        const content = document.getElementById("code").value;
-        const button = document.getElementById("submit");
-        button.disabled = true;
-        const response = await axios.post("/run", content, {
-          headers: { "Content-Type": "text/plain" },
-        });
-        button.disabled = false;
-        const result = document.getElementById("result");
-        result.innerText = response.data;
-        hljs.highlightBlock(result);
-        const lastrun = document.getElementById("last-run");
-        lastrun.innerText = new Date().toLocaleString();
+      const result = document.getElementById('result');
+      const submit = document.getElementById('submit');
 
-        const warnings = [];
+      const socket = io();
 
-        // Non ASCII test
-        const nonAsciiCharacters = new Set(
-          [...content].filter((c) => c.charCodeAt(0) > 128)
-        );
-        if (nonAsciiCharacters.size > 0)
-          warnings.push(
-            `You're using non-ASCII characters in your code: ${[
-              ...nonAsciiCharacters,
-            ].join(" ")}`
+      socket.on('connect', () => submit.disabled = false)
+
+      submit.onclick = async () => {
+
+          const content = document.getElementById('code').value;
+
+          socket.emit('submit', content);
+          submit.disabled = true;
+          setTimeout(() => submit.disabled = false, 1000)
+
+          const lastrun = document.getElementById("last-run");
+          lastrun.innerText = new Date().toLocaleString();
+          const warnings = [];
+
+          // Non ASCII test
+          const nonAsciiCharacters = new Set(
+            [...content].filter((c) => c.charCodeAt(0) > 128)
+          );
+          if (nonAsciiCharacters.size > 0)
+            warnings.push(
+              `You're using non-ASCII characters in your code: ${[
+                ...nonAsciiCharacters,
+              ].join(" ")}`
+            );
+
+          // Column width test
+          const longLines = content
+            .split("\n")
+            .map((v, i) => (v.length > 80 ? i + 1 : -1))
+            .filter((v) => v != -1);
+          if (longLines.length > 0)
+            warnings.push(
+              `You have the following lines going over 80 columns: ${longLines.join(
+                ", "
+              )}`
+            );
+
+          // Function length test
+          functionsSize = getFunctionsSize(content.split("\n"));
+          Object.keys(functionsSize).forEach((fn) => {
+            lines = functionsSize[fn];
+            if (lines <= FUNCTION_LENGTH_LIMIT) return;
+            warnings.push(
+              `Function <code>${fn}</code> has ${lines} lines, which is over the ${FUNCTION_LENGTH_LIMIT} lines limit.`
+            );
+          });
+
+          if (TRY_EXCEPT.test(content))
+            warnings.push("The use of try/except is a bad practice.");
+
+          document.getElementById("ascii-alert").innerHTML = warnings.join(
+            "<br/>"
           );
 
-        // Column width test
-        const longLines = content
-          .split("\n")
-          .map((v, i) => (v.length > 80 ? i + 1 : -1))
-          .filter((v) => v != -1);
-        if (longLines.length > 0)
-          warnings.push(
-            `You have the following lines going over 80 columns: ${longLines.join(
-              ", "
-            )}`
-          );
+      }
 
-        // Function length test
-        functionsSize = getFunctionsSize(content.split("\n"));
-        Object.keys(functionsSize).forEach((fn) => {
-          lines = functionsSize[fn];
-          if (lines <= FUNCTION_LENGTH_LIMIT) return;
-          warnings.push(
-            `Function <code>${fn}</code> has ${lines} lines, which is over the ${FUNCTION_LENGTH_LIMIT} lines limit.`
-          );
-        });
+      socket.on('clear', () => {
 
-        if (TRY_EXCEPT.test(content))
-          warnings.push("The use of try/except is a bad practice.");
+          result.innerText = '';
 
-        document.getElementById("ascii-alert").innerHTML = warnings.join(
-          "<br/>"
-        );
+      })
 
-        handleAdvancedErrorHandling(response.data);
-      };
+      socket.on('result', (data) => {
+
+          result.innerText += data;
+
+      })
+
+      socket.on('done', () => {
+
+          hljs.highlightBlock(result);
+          handleAdvancedErrorHandling(result.innerText)
+
+      });
+
     </script>
   </body>
 </html>

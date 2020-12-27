@@ -1,12 +1,11 @@
 import unittest
 from unittest.mock import patch
 import sys
-import importlib
-import os
-from io import StringIO
+import importlib.util
 
-target = importlib.import_module(sys.argv[1])
-
+target_spec = importlib.util.spec_from_loader('target', loader=None)
+target = importlib.util.module_from_spec(target_spec)
+exec(sys.stdin.read(), target.__dict__)
 
 class TestTADPosicao(unittest.TestCase):
 
