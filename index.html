@@ -44,7 +44,7 @@
       .result {
         overflow-y: auto;
         border: solid 1px rgb(118, 118, 118);
-        width: 600px;
+        width: 800px;
         height: 484px;
         position: relative;
       }
@@ -71,6 +71,8 @@
         font-family: "Roboto", sans-serif;
         border-radius: 4px;
         text-transform: uppercase;
+        margin-right: 8px;
+        margin-bottom: 16px;
       }
       .warning {
         color: rgb(255, 213, 153);
@@ -115,9 +117,11 @@
           <p>Paste your file contents below:</p>
           <textarea id="code" rows="30" cols="80"></textarea>
         </div>
-        <button id="submit" disabled>Run tests</button>
-
-        <span class="warning">Test execution can take up to 5 seconds.</span>
+        <div>
+          <button id="submit" disabled>Run tests</button>
+          <button id="kill" style="display: none">Kill execution</button>
+        </div>
+        <span class="warning">Test execution can take up to 2 minutes.</span>
         <p>
           Last ran: <span id="last-run"><i>never</i></span>
           <br />
@@ -507,86 +511,85 @@
         return functions;
       };
 
-      const result = document.getElementById('result');
-      const submit = document.getElementById('submit');
+      const result = document.getElementById("result");
+      const submit = document.getElementById("submit");
+      const killBtn = document.getElementById("kill");
 
       const socket = io();
 
-      socket.on('connect', () => submit.disabled = false)
+      killBtn.onclick = async () => {
+        socket.emit("kill");
+      };
+
+      socket.on("connect", () => (submit.disabled = false));
 
       submit.onclick = async () => {
+        const content = document.getElementById("code").value;
 
-          const content = document.getElementById('code').value;
+        socket.emit("submit", content);
+        submit.disabled = true;
+        killBtn.style.display = "inline-block";
 
-          socket.emit('submit', content);
-          submit.disabled = true;
-          setTimeout(() => submit.disabled = false, 1000)
+        const lastrun = document.getElementById("last-run");
+        lastrun.innerText = new Date().toLocaleString();
+        const warnings = [];
 
-          const lastrun = document.getElementById("last-run");
-          lastrun.innerText = new Date().toLocaleString();
-          const warnings = [];
-
-          // Non ASCII test
-          const nonAsciiCharacters = new Set(
-            [...content].filter((c) => c.charCodeAt(0) > 128)
-          );
-          if (nonAsciiCharacters.size > 0)
-            warnings.push(
-              `You're using non-ASCII characters in your code: ${[
-                ...nonAsciiCharacters,
-              ].join(" ")}`
-            );
-
-          // Column width test
-          const longLines = content
-            .split("\n")
-            .map((v, i) => (v.length > 80 ? i + 1 : -1))
-            .filter((v) => v != -1);
-          if (longLines.length > 0)
-            warnings.push(
-              `You have the following lines going over 80 columns: ${longLines.join(
-                ", "
-              )}`
-            );
-
-          // Function length test
-          functionsSize = getFunctionsSize(content.split("\n"));
-          Object.keys(functionsSize).forEach((fn) => {
-            lines = functionsSize[fn];
-            if (lines <= FUNCTION_LENGTH_LIMIT) return;
-            warnings.push(
-              `Function <code>${fn}</code> has ${lines} lines, which is over the ${FUNCTION_LENGTH_LIMIT} lines limit.`
-            );
-          });
-
-          if (TRY_EXCEPT.test(content))
-            warnings.push("The use of try/except is a bad practice.");
-
-          document.getElementById("ascii-alert").innerHTML = warnings.join(
-            "<br/>"
+        // Non ASCII test
+        const nonAsciiCharacters = new Set(
+          [...content].filter((c) => c.charCodeAt(0) > 128)
+        );
+        if (nonAsciiCharacters.size > 0)
+          warnings.push(
+            `You're using non-ASCII characters in your code: ${[
+              ...nonAsciiCharacters,
+            ].join(" ")}`
           );
 
-      }
+        // Column width test
+        const longLines = content
+          .split("\n")
+          .map((v, i) => (v.length > 80 ? i + 1 : -1))
+          .filter((v) => v != -1);
+        if (longLines.length > 0)
+          warnings.push(
+            `You have the following lines going over 80 columns: ${longLines.join(
+              ", "
+            )}`
+          );
 
-      socket.on('clear', () => {
+        // Function length test
+        functionsSize = getFunctionsSize(content.split("\n"));
+        Object.keys(functionsSize).forEach((fn) => {
+          lines = functionsSize[fn];
+          if (lines <= FUNCTION_LENGTH_LIMIT) return;
+          warnings.push(
+            `Function <code>${fn}</code> has ${lines} lines, which is over the ${FUNCTION_LENGTH_LIMIT} lines limit.`
+          );
+        });
 
-          result.innerText = '';
+        if (TRY_EXCEPT.test(content))
+          warnings.push("The use of try/except is a bad practice.");
 
-      })
+        document.getElementById("ascii-alert").innerHTML = warnings.join(
+          "<br/>"
+        );
+      };
 
-      socket.on('result', (data) => {
-
-          result.innerText += data;
-
-      })
-
-      socket.on('done', () => {
-
-          hljs.highlightBlock(result);
-          handleAdvancedErrorHandling(result.innerText)
-
+      socket.on("clear", () => {
+        result.innerText = "";
       });
 
+      socket.on("result", (data) => {
+        result.innerText += data;
+        hljs.highlightBlock(result);
+      });
+
+      socket.on("done", () => {
+        hljs.highlightBlock(result);
+        handleAdvancedErrorHandling(result.innerText);
+        killBtn.style.display = "none";
+        submit.disabled = false;
+      });
     </script>
   </body>
 </html>

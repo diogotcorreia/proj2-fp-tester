@@ -1,54 +1,71 @@
-const fs = require('fs');
-const path = require('path');
-const spawn = require('child_process').spawn;
-const express = require('express');
+const path = require("path");
+const spawn = require("child_process").spawn;
+const express = require("express");
 const app = express();
-const server = require('http').createServer(app);
-const io = require('socket.io')(server);
+const server = require("http").createServer(app);
+const io = require("socket.io")(server);
 
-app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
+app.get("/", (_req, res) => res.sendFile(path.join(__dirname, "index.html")));
 app.use("/assets", express.static(path.join(__dirname, "assets")));
 
-const timeout = 60;
+const timeout = 120;
 
 let processes = {};
-let timer = undefined;
+let timer = {};
 
 const closeProcess = (socket, processes, timer) => {
+  if (processes[socket.id]) {
     processes[socket.id].kill();
-    if(timer) clearTimeout(timer)
-    socket.emit('done')
-}
+    delete processes[socket.id];
+    socket.emit("done");
+  }
+  if (timer[socket.id]) {
+    clearTimeout(timer[socket.id]);
+    delete timer[socket.id];
+  }
+};
 
-io.on('connection', socket => {
+io.on("connection", (socket) => {
+  socket.on("submit", (code) => {
+    if (processes[socket.id]) closeProcess(socket, processes, timer);
+    socket.emit("clear");
 
-    socket.on('submit', code => {
+    socket.emit("result", "[Mooshak da Feira] Executing tests...\n\n");
 
-        if(processes[socket.id]) closeProcess(socket, processes, timer);
-        socket.emit('clear');
+    child = spawn("python3.5", [
+      "-u",
+      path.join(__dirname, "tests", "test.py"),
+    ]);
+    processes[socket.id] = child;
 
-        child = spawn('python3.5', ['-u', path.join(__dirname, 'tests', 'test.py')]);
-        processes[socket.id] = child;
+    result = (data) => socket.emit("result", data.toString());
+    child.stdout.on("data", result);
+    child.stderr.on("data", result);
 
-        result = (data) => socket.emit('result', data.toString());
-        child.stdout.on('data', result);
-        child.stderr.on('data', result);
+    child.stdin.write(code);
+    child.stdin.end();
 
-        child.stdin.write(code)
-        child.stdin.end()
+    child.on("close", () => closeProcess(socket, processes, timer));
 
-        child.on('close', () => closeProcess(socket, processes, timer));
+    timer[socket.id] = setTimeout(() => {
+      socket.emit(
+        "result",
+        `Program killed because it exceeded timeout (${timeout}s) :(`
+      );
+      closeProcess(socket, processes, timer);
+    }, timeout * 1000);
+  });
 
-        timer = setTimeout(() => {
-            child.kill();
-            socket.emit('result', 'timeout :(');
-        }, timeout*1000);
-    })
+  socket.on("disconnect", () => {
+    if (processes[socket.id]) closeProcess(socket, processes, timer);
+  });
 
-    socket.on('disconnect', () => {
-        if(processes[socket.id]) closeProcess(socket, processes, timer);
-    });
-
+  socket.on("kill", () => {
+    if (processes[socket.id]) {
+      socket.emit("result", "\nProgram killed by user :(");
+      closeProcess(socket, processes, timer);
+    }
+  });
 });
 
 server.listen(process.env.PORT || 5000);
