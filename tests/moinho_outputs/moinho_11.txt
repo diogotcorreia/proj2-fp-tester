@@ -5,11 +5,11 @@ Bem-vindo ao JOGO DO MOINHO. Nivel de dificuldade facil.
 2 [ ]-[ ]-[ ]
    | / | \ |
 3 [ ]-[ ]-[ ]
-Turno do jogador. Escolha uma posicao:    a   b   c 
+Turno do jogador. Escolha uma posicao:    a   b   c
 1 [ ]-[ ]-[ ]
-   | \ | / | 
+   | \ | / |
 2 [ ]-[X]-[ ]
-   | / | \ | 
+   | / | \ |
 3 [ ]-[ ]-[ ]
 Turno do computador (facil):
    a   b   c
