@@ -118,26 +118,26 @@ class TestTADPosicao(unittest.TestCase):
         Testa obter_posicoes_adjacentes para todas as posições válidas possíveis
         """
 
-        result = (
-            (('b', '1'), ('a', '2'), ('b', '2')),
-            (('a', '1'), ('b', '2'), ('a', '3')),
-            (('a', '2'), ('b', '2'), ('b', '3')),
-            (('a', '1'), ('c', '1'), ('b', '2')),
-            (('a', '1'), ('b', '1'), ('c', '1'), ('a', '2'),
-             ('c', '2'), ('a', '3'), ('b', '3'), ('c', '3')),
-            (('b', '2'), ('a', '3'), ('c', '3')),
-            (('b', '1'), ('b', '2'), ('c', '2')),
-            (('c', '1'), ('b', '2'), ('c', '3')),
-            (('b', '2'), ('c', '2'), ('b', '3'))
+        correct_result = (
+            ('b1', 'a2', 'b2'),
+            ('a1', 'b2', 'a3'),
+            ('a2', 'b2', 'b3'),
+            ('a1', 'c1', 'b2'),
+            ('a1', 'b1', 'c1', 'a2', 'c2', 'a3', 'b3', 'c3'),
+            ('b2', 'a3', 'c3'),
+            ('b1', 'b2', 'c2'),
+            ('c1', 'b2', 'c3'),
+            ('b2', 'c2', 'b3')
         )
 
         for i in range(len(self.positions)):
             c, l = self.positions[i]
             pos = target.cria_posicao(c, l)
-            correctResult = tuple(target.cria_posicao(
-                x[0], x[1]) for x in result[i])
+            result = target.obter_posicoes_adjacentes(pos)
+            self.assertEqual(type(result), tuple)
+            result = tuple(target.posicao_para_str(x) for x in result)
             self.assertEqual(
-                correctResult, target.obter_posicoes_adjacentes(pos), 'Falhou na posicao ' + c + l)
+                correct_result[i], result, 'Falhou na posicao ' + c + l)
 
     @unittest.skipUnless(ENABLE_MOCK_TESTING, "skipping mock tests")
     @patch.object(target, 'cria_posicao', side_effect=abstraction_tests.posicaoMocks[0])
@@ -151,9 +151,6 @@ class TestTADPosicao(unittest.TestCase):
         """
         Testa as barreiras de abstração do TAD Posição
         """
-
-        # NOTE: Esta implementação de TAD foi criada de propósito para ser absurda,
-        #   copiar isto seria extremamente obvio e uma má decisão académica
 
         self.test_obter_posicoes_adjacentes()
 
@@ -483,7 +480,8 @@ class TestTADTabuleiro(unittest.TestCase):
         piece = target.cria_peca('X')
         target_pos = target.cria_posicao('a', '1')
 
-        self.assertEqual(target.obter_peca(board, target_pos), empty_piece)
+        self.assertTrue(target.pecas_iguais(
+            target.obter_peca(board, target_pos), empty_piece))
         new_board = target.coloca_peca(board, piece, target_pos)
         # coloca_peca should return the same board
         self.assertIs(board, new_board)

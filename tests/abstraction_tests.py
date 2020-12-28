@@ -1,29 +1,44 @@
+# NOTE: Esta implementação de TAD foi criada de propósito para ser absurda,
+#   copiar isto seria extremamente obvio e uma má decisão académica.
+# A cópia do seguinte código pode levar ao chumbo na Unidade Curricular.
+
+class Pos:
+
+    def __init__(self, c, l):
+        self._foo = c
+        self._bar = l
+
+    def foobar(self):
+        return Pos(self._foo, self._bar)
+
+    def bar(self, foo):
+        return self._foo == foo._foo and self._bar == foo._bar
+
+
 posicaoMocks = (
-    lambda c, l: {n: 'c' if chr(n) == c else 'l' if chr(n) == l
-                  else '' for n in range(122, -1, -1)},
-    lambda p: {k: v for (k, v) in p.items()},
-    lambda p: chr([k for (k, v) in p.items() if v == 'c'][0]),
-    lambda p: chr([k for (k, v) in p.items() if v == 'l'][0]),
-    lambda p: type(p) == dict and [*p.keys()] == [*range(123)] and
-    [*p.values()].count('c') == [*p.values()].count('l') == 1,
-    lambda p1, p2: type(p1) == type(p2) == dict and
-    [*p1.keys()] == [*p2.keys()] == [*range(123)] and
-    [*p1.values(), *p2.values()].count('c') ==
-    [*p1.values(), *p2.values()].count('l') == 2 and
-    [*p1.values()].index('c') == [*p2.values()].index('c') and
-    [*p1.values()].index('l') == [*p2.values()].index('l'),
-    lambda p: ''.join([chr(k)
-                       for (k, v) in p.items() if v in ('c', 'l')][::-1])
+    lambda c, l: Pos(c, l),
+    lambda p: p.foobar(),
+    lambda p: p._foo,
+    lambda p: p._bar,
+    lambda p: isinstance(p, Pos),
+    lambda p1, p2: type(p1) == type(p2) == Pos and p1.bar(p2),
+    lambda p: ''.join([p._foo, p._bar])
 )
 
+
+class Piece:
+
+    def __init__(self, s):
+        self._foo = s
+
+    def foo(self, bar):
+        return self._foo == bar._foo
+
+
 pecaMocks = (
-    lambda s: {'foo': 'bar'.join([chr(n) for n in range(ord(s))])},
-    lambda j: {'foo': j['foo']},
-    lambda j: j in tuple({'foo': 'bar'.join([chr(n) for n in range(m)])}
-                         for m in (32, 88, 79)),
-    lambda j1, j2: all(j in tuple({'foo': 'bar'.join(
-        [chr(n) for n in range(m)])} for m in (32, 88, 79))
-        for j in (j1, j2)) and len(j1['foo']) == len(j2['foo']),
-    lambda j: ''.join(
-        [chr(n) if n != 92 else chr(ord(j['foo'][-1]) + 1) for n in range(91, 94)])
+    lambda s: Piece(s),
+    lambda j: Piece(j._foo),
+    lambda j: type(j) == Piece,
+    lambda j1, j2: type(j1) == type(j2) == Piece and j1.foo(j2),
+    lambda j: ''.join([chr(91), j._foo, chr(93)])
 )
