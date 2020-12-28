@@ -4,6 +4,7 @@ import sys
 import importlib.util
 from io import StringIO
 import os
+import abstraction_tests
 
 ENABLE_MOCK_TESTING = len(sys.argv) >= 2 and sys.argv[1] == "True"
 
@@ -138,32 +139,14 @@ class TestTADPosicao(unittest.TestCase):
             self.assertEqual(
                 correctResult, target.obter_posicoes_adjacentes(pos), 'Falhou na posicao ' + c + l)
 
-    mocks = (
-        lambda c, l: {n: 'c' if chr(n) == c else 'l' if chr(n) == l
-                      else '' for n in range(122, -1, -1)},
-        lambda p: {k: v for (k, v) in p.items()},
-        lambda p: chr([k for (k, v) in p.items() if v == 'c'][0]),
-        lambda p: chr([k for (k, v) in p.items() if v == 'l'][0]),
-        lambda p: type(p) == dict and [*p.keys()] == [*range(123)] and
-        [*p.values()].count('c') == [*p.values()].count('l') == 1,
-        lambda p1, p2: type(p1) == type(p2) == dict and
-        [*p1.keys()] == [*p2.keys()] == [*range(123)] and
-        [*p1.values(), *p2.values()].count('c') ==
-        [*p1.values(), *p2.values()].count('l') == 2 and
-        [*p1.values()].index('c') == [*p2.values()].index('c') and
-        [*p1.values()].index('l') == [*p2.values()].index('l'),
-        lambda p: ''.join([chr(k)
-                           for (k, v) in p.items() if v in ('c', 'l')][::-1])
-    )
-
     @unittest.skipUnless(ENABLE_MOCK_TESTING, "skipping mock tests")
-    @patch.object(target, 'cria_posicao', side_effect=mocks[0])
-    @patch.object(target, 'cria_copia_posicao', side_effect=mocks[1])
-    @patch.object(target, 'obter_pos_c', side_effect=mocks[2])
-    @patch.object(target, 'obter_pos_l', side_effect=mocks[3])
-    @patch.object(target, 'eh_posicao', side_effect=mocks[4])
-    @patch.object(target, 'posicoes_iguais', side_effect=mocks[5])
-    @patch.object(target, 'posicao_para_str', side_effect=mocks[6])
+    @patch.object(target, 'cria_posicao', side_effect=abstraction_tests.posicaoMocks[0])
+    @patch.object(target, 'cria_copia_posicao', side_effect=abstraction_tests.posicaoMocks[1])
+    @patch.object(target, 'obter_pos_c', side_effect=abstraction_tests.posicaoMocks[2])
+    @patch.object(target, 'obter_pos_l', side_effect=abstraction_tests.posicaoMocks[3])
+    @patch.object(target, 'eh_posicao', side_effect=abstraction_tests.posicaoMocks[4])
+    @patch.object(target, 'posicoes_iguais', side_effect=abstraction_tests.posicaoMocks[5])
+    @patch.object(target, 'posicao_para_str', side_effect=abstraction_tests.posicaoMocks[6])
     def test_obter_posicoes_adjacentes_mock(self, *_):
         """
         Testa as barreiras de abstração do TAD Posição
@@ -271,24 +254,12 @@ class TestTADPeca(unittest.TestCase):
             p = target.cria_peca(piece)
             self.assertEqual(result[i], target.peca_para_inteiro(p))
 
-    mocks = (
-        lambda s: {'foo': 'bar'.join([chr(n) for n in range(ord(s))])},
-        lambda j: {'foo': j['foo']},
-        lambda j: j in tuple({'foo': 'bar'.join([chr(n) for n in range(m)])}
-                             for m in (32, 88, 79)),
-        lambda j1, j2: all(j in tuple({'foo': 'bar'.join(
-            [chr(n) for n in range(m)])} for m in (32, 88, 79))
-            for j in (j1, j2)) and len(j1['foo']) == len(j2['foo']),
-        lambda j: ''.join(
-            [chr(n) if n != 92 else chr(ord(j['foo'][-1]) + 1) for n in range(91, 94)])
-    )
-
     @unittest.skipUnless(ENABLE_MOCK_TESTING, "skipping mock tests")
-    @patch.object(target, 'cria_peca', side_effect=mocks[0])
-    @patch.object(target, 'cria_copia_peca', side_effect=mocks[1])
-    @patch.object(target, 'eh_peca', side_effect=mocks[2])
-    @patch.object(target, 'pecas_iguais', side_effect=mocks[3])
-    @patch.object(target, 'peca_para_str', side_effect=mocks[4])
+    @patch.object(target, 'cria_peca', side_effect=abstraction_tests.pecaMocks[0])
+    @patch.object(target, 'cria_copia_peca', side_effect=abstraction_tests.pecaMocks[1])
+    @patch.object(target, 'eh_peca', side_effect=abstraction_tests.pecaMocks[2])
+    @patch.object(target, 'pecas_iguais', side_effect=abstraction_tests.pecaMocks[3])
+    @patch.object(target, 'peca_para_str', side_effect=abstraction_tests.pecaMocks[4])
     def test_peca_para_inteiro_mock(self, *_):
         """
         Testa as barreiras de abstração do TAD Peca
@@ -595,16 +566,14 @@ class TestTADTabuleiro(unittest.TestCase):
                 self.assertEqual(tuple(target.posicao_para_str(x)
                                        for x in pos_result), pos, msg="Input: {}, {}".format(board, player))
 
-    mocks = TestTADPosicao.mocks
-
     @unittest.skipUnless(ENABLE_MOCK_TESTING, "skipping mock tests")
-    @patch.object(target, 'cria_posicao', side_effect=mocks[0])
-    @patch.object(target, 'cria_copia_posicao', side_effect=mocks[1])
-    @patch.object(target, 'obter_pos_c', side_effect=mocks[2])
-    @patch.object(target, 'obter_pos_l', side_effect=mocks[3])
-    @patch.object(target, 'eh_posicao', side_effect=mocks[4])
-    @patch.object(target, 'posicoes_iguais', side_effect=mocks[5])
-    @patch.object(target, 'posicao_para_str', side_effect=mocks[6])
+    @patch.object(target, 'cria_posicao', side_effect=abstraction_tests.posicaoMocks[0])
+    @patch.object(target, 'cria_copia_posicao', side_effect=abstraction_tests.posicaoMocks[1])
+    @patch.object(target, 'obter_pos_c', side_effect=abstraction_tests.posicaoMocks[2])
+    @patch.object(target, 'obter_pos_l', side_effect=abstraction_tests.posicaoMocks[3])
+    @patch.object(target, 'eh_posicao', side_effect=abstraction_tests.posicaoMocks[4])
+    @patch.object(target, 'posicoes_iguais', side_effect=abstraction_tests.posicaoMocks[5])
+    @patch.object(target, 'posicao_para_str', side_effect=abstraction_tests.posicaoMocks[6])
     def test_abstracao_posicao_no_tabuleiro(self, *_):
         """
         Testa as barreiras de abstração do TAD tabuleiro em relação ao TAD posição
@@ -626,14 +595,12 @@ class TestTADTabuleiro(unittest.TestCase):
         self.test_obter_posicoes_livres()
         self.test_obter_posicoes_jogador()
 
-    mocks = TestTADPeca.mocks
-
     @unittest.skipUnless(ENABLE_MOCK_TESTING, "skipping mock tests")
-    @patch.object(target, 'cria_peca', side_effect=mocks[0])
-    @patch.object(target, 'cria_copia_peca', side_effect=mocks[1])
-    @patch.object(target, 'eh_peca', side_effect=mocks[2])
-    @patch.object(target, 'pecas_iguais', side_effect=mocks[3])
-    @patch.object(target, 'peca_para_str', side_effect=mocks[4])
+    @patch.object(target, 'cria_peca', side_effect=abstraction_tests.pecaMocks[0])
+    @patch.object(target, 'cria_copia_peca', side_effect=abstraction_tests.pecaMocks[1])
+    @patch.object(target, 'eh_peca', side_effect=abstraction_tests.pecaMocks[2])
+    @patch.object(target, 'pecas_iguais', side_effect=abstraction_tests.pecaMocks[3])
+    @patch.object(target, 'peca_para_str', side_effect=abstraction_tests.pecaMocks[4])
     def test_abstracao_peca_no_tabuleiro(self, *_):
         """
         Testa as barreiras de abstração do TAD tabuleiro em relação ao TAD peca
@@ -903,16 +870,14 @@ class TestFuncoesAdicionais(unittest.TestCase):
                     sys.stdout = sys.__stdout__
                     sys.stdin = sys.__stdin__
 
-    mocks = TestTADPosicao.mocks
-
     @unittest.skipUnless(ENABLE_MOCK_TESTING, "skipping mock tests")
-    @patch.object(target, 'cria_posicao', side_effect=mocks[0])
-    @patch.object(target, 'cria_copia_posicao', side_effect=mocks[1])
-    @patch.object(target, 'obter_pos_c', side_effect=mocks[2])
-    @patch.object(target, 'obter_pos_l', side_effect=mocks[3])
-    @patch.object(target, 'eh_posicao', side_effect=mocks[4])
-    @patch.object(target, 'posicoes_iguais', side_effect=mocks[5])
-    @patch.object(target, 'posicao_para_str', side_effect=mocks[6])
+    @patch.object(target, 'cria_posicao', side_effect=abstraction_tests.posicaoMocks[0])
+    @patch.object(target, 'cria_copia_posicao', side_effect=abstraction_tests.posicaoMocks[1])
+    @patch.object(target, 'obter_pos_c', side_effect=abstraction_tests.posicaoMocks[2])
+    @patch.object(target, 'obter_pos_l', side_effect=abstraction_tests.posicaoMocks[3])
+    @patch.object(target, 'eh_posicao', side_effect=abstraction_tests.posicaoMocks[4])
+    @patch.object(target, 'posicoes_iguais', side_effect=abstraction_tests.posicaoMocks[5])
+    @patch.object(target, 'posicao_para_str', side_effect=abstraction_tests.posicaoMocks[6])
     def test_abstracao_posicao_nas_adicionais(self, *_):
         """
         Testa as barreiras de abstração das funções adicionais em relação ao TAD posição
@@ -921,14 +886,12 @@ class TestFuncoesAdicionais(unittest.TestCase):
         self.test_obter_movimento_auto_normal()
         self.test_obter_movimento_auto_dificil()
 
-    mocks = TestTADPeca.mocks
-
     @unittest.skipUnless(ENABLE_MOCK_TESTING, "skipping mock tests")
-    @patch.object(target, 'cria_peca', side_effect=mocks[0])
-    @patch.object(target, 'cria_copia_peca', side_effect=mocks[1])
-    @patch.object(target, 'eh_peca', side_effect=mocks[2])
-    @patch.object(target, 'pecas_iguais', side_effect=mocks[3])
-    @patch.object(target, 'peca_para_str', side_effect=mocks[4])
+    @patch.object(target, 'cria_peca', side_effect=abstraction_tests.pecaMocks[0])
+    @patch.object(target, 'cria_copia_peca', side_effect=abstraction_tests.pecaMocks[1])
+    @patch.object(target, 'eh_peca', side_effect=abstraction_tests.pecaMocks[2])
+    @patch.object(target, 'pecas_iguais', side_effect=abstraction_tests.pecaMocks[3])
+    @patch.object(target, 'peca_para_str', side_effect=abstraction_tests.pecaMocks[4])
     def test_abstracao_peca_nas_adicionais(self, *_):
         """
         Testa as barreiras de abstração das funções adicionais em relação ao TAD peca
