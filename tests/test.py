@@ -753,10 +753,30 @@ class TestFuncoesAdicionais(unittest.TestCase):
             (((-1, 1, 0), (0, -1, 1), (-1, 0, 1)), 'X', ('b1', 'c1'))
         ]
 
-        self.moinho = [
+         self.moinho = [
             # output file name, difficulty, starting player, moves, winner
             ('moinho_1.txt', 'facil',
              '[X]', ('a2', 'a1', 'c1', 'c1c2', 'a1b1', 'b1b2'), '[X]')
+            ('moinho_2.txt', 'dificil',
+             '[X]',('a2','b3','a3','a3a3','a2a1','a1a2','a2a1','a3a2'), '[O]')
+            ('moinho_3.txt', 'dificil',
+             '[X]',('b2','b1','c3','b2a2','c3c2','c2c3','a3a1'), '[O]')
+            ('moinho_4.txt', 'dificil',
+             '[X]',('a1','b1','a2','a1a1','b1c1','a1b1'), '[O]')
+            ('moinho_5.txt', 'dificil',
+             '[O]',('a1','a3','c2','a3b3','c2c3'), '[X]')
+            ('moinho_6.txt', 'normal',
+             '[O]',('a1','a3','c2','c2c3','a3b3'), '[X]')
+            ('moinho_7.txt', 'normal',
+             '[X]',('a1','c2','c3','c3b3','c2c1','a1b2'), '[O]')
+            ('moinho_8.txt', 'normal',
+             '[X]',('a2','a1','b1','a1a1','b1c1','c1b2','b2b3','a2b2','a1b1'), '[X]')
+            ('moinho_9.txt', 'facil',
+             '[X]',('b2','b1','c2','b2c3','b1c1'), '[X]')
+            ('moinho_10.txt', 'facil',
+             '[X]',('a3','a2','b3','a3a3','a2a1','a3a2','b3a3'), '[X]')
+            ('moinho_11.txt', 'facil',
+             '[X]',('b2','b1','c1','b2c3','b1b2','b2c2'), '[X]')
         ]
 
     def test_obter_movimento_manual_fail(self):
