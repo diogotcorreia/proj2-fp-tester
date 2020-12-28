@@ -8,7 +8,7 @@ const io = require("socket.io")(server);
 app.get("/", (_req, res) => res.sendFile(path.join(__dirname, "index.html")));
 app.use("/assets", express.static(path.join(__dirname, "assets")));
 
-const timeout = 120;
+const timeout = 300;
 
 let processes = {};
 let timer = {};
@@ -35,7 +35,7 @@ io.on("connection", (socket) => {
       `[Mooshak da Feira] Executing tests... ${
         skipMocks
           ? "(skipping abstraction tests)"
-          : "(testing abstraction; might take up to 2 minutes)"
+          : `(testing abstraction; might take up to ${timeout / 60} minutes)`
       }\n\n`
     );
 
