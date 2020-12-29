@@ -822,7 +822,8 @@ class TestFuncoesAdicionais(unittest.TestCase):
             player_obj = target.cria_peca(player)
             result = target.obter_movimento_auto(
                 board_obj, player_obj, 'facil')
-            self.assertEqual(type(result), tuple)
+            self.assertEqual(type(result), tuple,
+                             msg="Input: {}, {}".format(board, player))
             result_formatted = tuple(target.posicao_para_str(x)
                                      for x in result)
             self.assertEqual(correct_result, result_formatted,
@@ -838,7 +839,8 @@ class TestFuncoesAdicionais(unittest.TestCase):
             player_obj = target.cria_peca(player)
             result = target.obter_movimento_auto(
                 board_obj, player_obj, 'normal')
-            self.assertEqual(type(result), tuple)
+            self.assertEqual(type(result), tuple,
+                             msg="Input: {}, {}".format(board, player))
             result_formatted = tuple(target.posicao_para_str(x)
                                      for x in result)
             self.assertEqual(correct_result, result_formatted,
@@ -854,7 +856,8 @@ class TestFuncoesAdicionais(unittest.TestCase):
             player_obj = target.cria_peca(player)
             result = target.obter_movimento_auto(
                 board_obj, player_obj, 'dificil')
-            self.assertEqual(type(result), tuple)
+            self.assertEqual(type(result), tuple,
+                             msg="Input: {}, {}".format(board, player))
             result_formatted = tuple(target.posicao_para_str(x)
                                      for x in result)
             self.assertEqual(correct_result, result_formatted,
@@ -884,6 +887,9 @@ class TestFuncoesAdicionais(unittest.TestCase):
                 except ValueError as e:
                     self.fail(
                         "moinho threw ValueError ({}). Moinho test: {}".format(e, out_file))
+                except EOFError as e:
+                    self.fail(
+                        "moinho game did not end when it should ({}). Moinho test: {}".format(e, out_file))
                 finally:
                     sys.stdout.close()
                     sys.stdin.close()
