@@ -502,6 +502,26 @@ class TestTADTabuleiro(unittest.TestCase):
         # move_peca should return the same board
         self.assertIs(board, new_board)
         self.assertTrue(target.pecas_iguais(
+            target.cria_peca(' '), target.obter_peca(new_board, pos_from)))
+        self.assertTrue(target.pecas_iguais(
+            piece, target.obter_peca(new_board, pos_to)))
+
+    def test_move_peca_same_position(self):
+        """
+        Testa move_peca de uma posicao para a mesma posicao num tabuleiro
+        PRO TIP: no `move_peca`, verifica que estás a remover primeiro a peça e
+        só depois a colocar uma nova, por esta ordem. Ao contrário não vai funcionar.
+        """
+        board = target.tuplo_para_tabuleiro(self.valid_boards[3])
+        pos_from = target.cria_posicao('b', '3')
+        pos_to = target.cria_posicao('b', '3')
+
+        piece = target.cria_peca('O')
+
+        new_board = target.move_peca(board, pos_from, pos_to)
+        # move_peca should return the same board
+        self.assertIs(board, new_board)
+        self.assertTrue(target.pecas_iguais(
             piece, target.obter_peca(new_board, pos_to)))
 
     def test_remove_peca(self):
