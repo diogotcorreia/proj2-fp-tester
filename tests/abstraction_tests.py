@@ -42,3 +42,61 @@ pecaMocks = (
     lambda j1, j2: type(j1) == type(j2) == Piece and j1.foo(j2),
     lambda j: ''.join([chr(91), j._foo, chr(93)])
 )
+
+
+class Board:
+
+    def __init__(self, a1=Piece(' '), b1=Piece(' '), c1=Piece(' '), a2=Piece(' '), b2=Piece(' '), c2=Piece(' '), a3=Piece(' '), b3=Piece(' '), c3=Piece(' ')):
+        self.a1, self.b1, self.c1, self.a2, self.b2, self.c2, self.a3, self.b3, self.c3 = a1, b1, c1, a2, b2, c2, a3, b3, c3
+
+    def foo(self):
+        return Board(self.a1, self.b1, self.c1, self.a2, self.b2, self.c2, self.a3, self.b3, self.c3)
+
+    def bar(self, x):
+        return getattr(self, x)
+
+    def foobar(self, x):
+        _bar = list()
+        _x = ord(x) > 90
+        for y in range(3):
+            _bar.append(getattr(self, x + str(y + 1)
+                                if _x else chr(97 + y) + x))
+        return tuple(_bar)
+
+    def barfoo(self, x, y):
+        setattr(self, y, x)
+        return self
+
+    def _foo(self, x, y):
+        _bar = getattr(self, x)
+        self.barfoo(Piece(' '), x)
+        self.barfoo(_bar, y)
+        return self
+
+    def _bar(self, x):
+        def _x(y, z): return posicaoMocks[5](y, z)
+        return _x(self.a1, x.a1) and _x(self.b1, x.b1) and _x(self.c1, x.c1) and _x(self.a2, x.a2) and _x(self.b2, x.b2) and _x(self.c2, x.c2) and _x(self.a3, x.a3) and _x(self.b3, x.b3) and _x(self.c3, x.c3)
+
+    def _foobar(self):
+        def _x(x): return pecaMocks[4](x)
+        return "   a   b   c\n1 "+_x(self.a1)+"-"+_x(self.b1)+"-"+_x(self.c1)+"\n   | \\ | / |\n2 "+_x(self.a2)+"-"+_x(self.b2)+"-"+_x(self.c2)+"\n   | / | \\ |\n3 "+_x(self.a3)+"-"+_x(self.b3)+"-"+_x(self.c3)+""
+
+
+def _foobar(x): Piece(' ') if x == 0 else Piece('X') if x == 1 else Piece('O')
+
+
+tabMocks = (
+    lambda: Board(),
+    lambda x: x.foo(),
+    lambda x, y: x.bar(posicaoMocks[6](y)),
+    lambda x, y: x.foobar(y),
+    lambda x, y, z: x.barfoo(y, posicaoMocks[6](z)),
+    lambda x, y: x.barfoo(Piece(' '), posicaoMocks[6](y)),
+    lambda x, y, z: x._foo(posicaoMocks[6](y), posicaoMocks[6](z)),
+    lambda x: type(x) == Board,
+    lambda x, y: posicaoMocks[5](Piece(' '), x.bar(posicaoMocks[6](y))),
+    lambda x, y: type(x) == type(y) == Board and x._bar(y),
+    lambda x: x._foobar(),
+    lambda x: Board(_foobar(x[0][0]), _foobar(x[0][1]), _foobar(x[0][2]), _foobar(x[1][0]), _foobar(
+        x[1][1]), _foobar(x[1][2]), _foobar(x[2][0]), _foobar(x[2][1]), _foobar(x[2][2]))
+)

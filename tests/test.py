@@ -946,6 +946,37 @@ class TestFuncoesAdicionais(unittest.TestCase):
         self.test_obter_movimento_auto_normal()
         self.test_obter_movimento_auto_dificil()
 
+    @unittest.skipUnless(ENABLE_MOCK_TESTING, "skipping mock tests")
+    @patch.object(target, 'cria_posicao', side_effect=abstraction_tests.posicaoMocks[0])
+    @patch.object(target, 'cria_copia_posicao', side_effect=abstraction_tests.posicaoMocks[1])
+    @patch.object(target, 'obter_pos_c', side_effect=abstraction_tests.posicaoMocks[2])
+    @patch.object(target, 'obter_pos_l', side_effect=abstraction_tests.posicaoMocks[3])
+    @patch.object(target, 'eh_posicao', side_effect=abstraction_tests.posicaoMocks[4])
+    @patch.object(target, 'posicoes_iguais', side_effect=abstraction_tests.posicaoMocks[5])
+    @patch.object(target, 'posicao_para_str', side_effect=abstraction_tests.posicaoMocks[6])
+    @patch.object(target, 'cria_peca', side_effect=abstraction_tests.pecaMocks[0])
+    @patch.object(target, 'cria_copia_peca', side_effect=abstraction_tests.pecaMocks[1])
+    @patch.object(target, 'eh_peca', side_effect=abstraction_tests.pecaMocks[2])
+    @patch.object(target, 'pecas_iguais', side_effect=abstraction_tests.pecaMocks[3])
+    @patch.object(target, 'peca_para_str', side_effect=abstraction_tests.pecaMocks[4])
+    @patch.object(target, 'cria_tabuleiro', side_effect=abstraction_tests.tabMocks[0])
+    @patch.object(target, 'cria_copia_tabuleiro', side_effect=abstraction_tests.tabMocks[1])
+    @patch.object(target, 'obter_peca', side_effect=abstraction_tests.tabMocks[2])
+    @patch.object(target, 'obter_vetor', side_effect=abstraction_tests.tabMocks[3])
+    @patch.object(target, 'coloca_peca', side_effect=abstraction_tests.tabMocks[4])
+    @patch.object(target, 'remove_peca', side_effect=abstraction_tests.tabMocks[5])
+    @patch.object(target, 'move_peca', side_effect=abstraction_tests.tabMocks[6])
+    @patch.object(target, 'eh_tabuleiro', side_effect=abstraction_tests.tabMocks[7])
+    @patch.object(target, 'eh_posicao_livre', side_effect=abstraction_tests.tabMocks[8])
+    @patch.object(target, 'tabuleiros_iguais', side_effect=abstraction_tests.tabMocks[9])
+    @patch.object(target, 'tabuleiro_para_str', side_effect=abstraction_tests.tabMocks[10])
+    @patch.object(target, 'tuplo_para_tabuleiro', side_effect=abstraction_tests.tabMocks[11])
+    def test_abstracao_total_no_moinho(self, *_):
+        """
+        Testa as barreiras de abstração do tabuleiro, peça e posição na função moinho
+        """
+        self.test_moinho()
+
 
 class TestsEnunciado(unittest.TestCase):
     def test_tabuleiro_para_str(self):
