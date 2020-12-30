@@ -8,7 +8,7 @@ const io = require('socket.io')(server);
 app.get('/', (_req, res) => res.sendFile(path.join(__dirname, 'index.html')));
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
-const timeout = 300;
+const timeout = 120;
 
 let queue = [];
 let sockets = {};
