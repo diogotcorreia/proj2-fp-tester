@@ -54,17 +54,16 @@ const leaveQueue = (q, s) => {
 };
 
 const killProcess = (s) => {
-  if (sockets[s.id]) {
-    if (sockets[s.id]['timer']) clearTimeout(sockets[s.id]['timer']);
-    if (sockets[s.id]['process']) sockets[s.id]['process'].kill();
-    delete sockets[s.id];
-  }
+  if (!sockets[s.id]) return;   // already killed
+  if (sockets[s.id]['timer']) clearTimeout(sockets[s.id]['timer']);
+  if (sockets[s.id]['process']) sockets[s.id]['process'].kill();
+  delete sockets[s.id];
   s.emit('done');
   processing = undefined;
 };
 
 const processTests = (s) => {
-  socket.emit(
+  s.emit(
     'result',
     `Executing tests... ${
       sockets[s.id]['skipMocks']
@@ -85,7 +84,7 @@ const processTests = (s) => {
     killProcess(s);
   }, timeout * 1000);
 
-  result = (data) => socket.emit('result', data.toString());
+  result = (data) => s.emit('result', data.toString());
   child.stdout.on('data', result);
   child.stderr.on('data', result);
 
