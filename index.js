@@ -54,7 +54,7 @@ const leaveQueue = (q, s) => {
 };
 
 const killProcess = (s) => {
-  if (!sockets[s.id]) return;   // already killed
+  if (!sockets[s.id]) return; // already killed
   if (sockets[s.id]['timer']) clearTimeout(sockets[s.id]['timer']);
   if (sockets[s.id]['process']) sockets[s.id]['process'].kill();
   delete sockets[s.id];
