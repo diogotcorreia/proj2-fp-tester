@@ -16,13 +16,17 @@ let processing;
 
 const enqueue = (q, s, code, skipMocks) => {
   sockets[s.id] = {"code": code, "skipMocks": skipMocks};
-  p = q.push(s);
-  s.emit(
-    "result",
-    `[Mooshak da Feira] Your test is in the queue. There ${
-      p == 1 ? "is 1 test" : `are ${p} tests`
-    } before yours.\n`
-  );
+  p = q.push(s) - (processing ? 0 : 1);
+  if (p > 0) {
+    s.emit(
+      "result",
+      `[Mooshak da Feira] Your test is in the queue. There ${
+        p == 1 ? "is 1 test" : `are ${p} tests`
+      } before yours.\n`
+    );
+  } else {
+    s.emit("result", '[Mooshak da Feira] ')
+  }
 }
 
 const notifyNewPos = q => {
@@ -51,6 +55,7 @@ const leaveQueue = (q, s) => {
   delete sockets[s.id];
   q.splice(i, 1);
   notifyNewPos(q.slice(i));
+  s.emit("done");
 }
 
 const killProcess = s => {
