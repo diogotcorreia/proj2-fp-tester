@@ -1,12 +1,12 @@
-const path = require("path");
-const spawn = require("child_process").spawn;
-const express = require("express");
+const path = require('path');
+const spawn = require('child_process').spawn;
+const express = require('express');
 const app = express();
-const server = require("http").createServer(app);
-const io = require("socket.io")(server);
+const server = require('http').createServer(app);
+const io = require('socket.io')(server);
 
-app.get("/", (_req, res) => res.sendFile(path.join(__dirname, "index.html")));
-app.use("/assets", express.static(path.join(__dirname, "assets")));
+app.get('/', (_req, res) => res.sendFile(path.join(__dirname, 'index.html')));
+app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
 const timeout = 300;
 
@@ -15,36 +15,31 @@ let sockets = {};
 let processing;
 
 const enqueue = (q, s, code, skipMocks) => {
-  sockets[s.id] = {"code": code, "skipMocks": skipMocks};
+  sockets[s.id] = { code: code, skipMocks: skipMocks };
   p = q.push(s) - (processing ? 0 : 1);
   if (p > 0) {
     s.emit(
-      "result",
+      'result',
       `[Mooshak da Feira] Your test is in the queue. There ${
-        p == 1 ? "is 1 test" : `are ${p} tests`
+        p == 1 ? 'is 1 test' : `are ${p} tests`
       } before yours.\n`
     );
   } else {
-    s.emit("result", '[Mooshak da Feira] ')
+    s.emit('result', '[Mooshak da Feira] ');
   }
-}
+};
 
-const notifyNewPos = q => {
+const notifyNewPos = (q) => {
   q.forEach((s, i) => {
-    s.emit(
-      "result",
-      `There ${
-        i == 0 ? "is 1 test" : `are ${i + 1} tests`
-      } before yours.\n`
-    );
+    s.emit('result', `There ${i == 0 ? 'is 1 test' : `are ${i + 1} tests`} before yours.\n`);
   });
-}
+};
 
-const next = q => {
+const next = (q) => {
   s = q.shift();
   notifyNewPos(q);
-  return s
-}
+  return s;
+};
 
 const leaveQueue = (q, s) => {
   i = q.indexOf(s);
@@ -55,75 +50,71 @@ const leaveQueue = (q, s) => {
   delete sockets[s.id];
   q.splice(i, 1);
   notifyNewPos(q.slice(i));
-  s.emit("done");
-}
+  s.emit('done');
+};
 
-const killProcess = s => {
+const killProcess = (s) => {
   if (sockets[s.id]) {
-    if (sockets[s.id]["timer"]) clearTimeout(sockets[s.id]["timer"]);
-    if (sockets[s.id]["process"]) sockets[s.id]["process"].kill();
+    if (sockets[s.id]['timer']) clearTimeout(sockets[s.id]['timer']);
+    if (sockets[s.id]['process']) sockets[s.id]['process'].kill();
     delete sockets[s.id];
   }
-  s.emit("done");
+  s.emit('done');
   processing = undefined;
 };
 
-const processTests = s => {
+const processTests = (s) => {
   socket.emit(
-    "result",
+    'result',
     `Executing tests... ${
-      sockets[s.id]["skipMocks"]
-        ? "(skipping abstraction tests)"
+      sockets[s.id]['skipMocks']
+        ? '(skipping abstraction tests)'
         : `(testing abstraction; might take up to ${timeout / 60} minutes)`
     }\n\n`
   );
 
-  child = spawn("python3.5", [
-    "-u",
-    path.join(__dirname, "tests", "test.py"),
-    sockets[s.id]['skipMocks'] ? "False" : "True",
+  child = spawn('python3.5', [
+    '-u',
+    path.join(__dirname, 'tests', 'test.py'),
+    sockets[s.id]['skipMocks'] ? 'False' : 'True',
   ]);
-  sockets[s.id]["process"] = child;
+  sockets[s.id]['process'] = child;
 
-  sockets[s.id]["timer"] = setTimeout(() => {
-    s.emit(
-      "result",
-      `Program killed because it exceeded timeout (${timeout}s) :(`
-    );
+  sockets[s.id]['timer'] = setTimeout(() => {
+    s.emit('result', `Program killed because it exceeded timeout (${timeout}s) :(`);
     killProcess(s);
   }, timeout * 1000);
 
-  result = (data) => socket.emit("result", data.toString());
-  child.stdout.on("data", result);
-  child.stderr.on("data", result);
+  result = (data) => socket.emit('result', data.toString());
+  child.stdout.on('data', result);
+  child.stderr.on('data', result);
 
   child.stdin.write(sockets[s.id]['code']);
   child.stdin.end();
 
-  child.on("close", () => killProcess(s));
-}
+  child.on('close', () => killProcess(s));
+};
 
-
-io.on("connection", (socket) => {
-  socket.on("submit", (code, skipMocks) => {
-      socket.emit("clear");
-      enqueue(queue, socket, code, skipMocks);
+io.on('connection', (socket) => {
+  socket.on('submit', (code, skipMocks) => {
+    socket.emit('clear');
+    enqueue(queue, socket, code, skipMocks);
   });
 
-  socket.on("disconnect", () => {
+  socket.on('disconnect', () => {
     if (processing == socket.id) {
       killProcess(socket);
     } else if (queue.indexOf(socket) != -1) {
-      leaveQueue(queue, socket)
+      leaveQueue(queue, socket);
     }
   });
 
-  socket.on("kill", () => {
+  socket.on('kill', () => {
     if (processing == socket.id) {
-      socket.emit("result", "\nProgram killed by user :(");
+      socket.emit('result', '\nProgram killed by user :(');
       killProcess(socket);
     } else if (queue.indexOf(socket) != -1) {
-      socket.emit("result", "\nLeft queue.");
+      socket.emit('result', '\nLeft queue.');
       leaveQueue(queue, socket);
     }
   });

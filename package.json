@@ -5,13 +5,15 @@
   "license": "MIT",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "format": "prettier --write \"./**/*.{js,json,html,md}\""
   },
   "dependencies": {
     "express": "^4.17.1",
     "socket.io": "^3.0.4"
   },
   "devDependencies": {
-    "nodemon": "^2.0.6"
+    "nodemon": "^2.0.6",
+    "prettier": "^2.2.1"
   }
 }

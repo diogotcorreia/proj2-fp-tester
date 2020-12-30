@@ -4,10 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FP Project2 Tester</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Roboto&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/gh/tonsky/FiraCode@4/distr/fira_code.css"
@@ -25,11 +22,11 @@
       input,
       textarea,
       pre {
-        font-family: "Fira Code", monospace;
+        font-family: 'Fira Code', monospace;
       }
       html,
       body {
-        font-family: "Roboto", sans-serif;
+        font-family: 'Roboto', sans-serif;
       }
       a {
         color: #00aef8;
@@ -64,11 +61,10 @@
         color: rgba(0, 0, 0, 0.87);
         border: none;
         cursor: pointer;
-        box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2),
-          0px 2px 2px 0px rgba(0, 0, 0, 0.14),
+        box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14),
           0px 1px 5px 0px rgba(0, 0, 0, 0.12);
         padding: 6px 16px;
-        font-family: "Roboto", sans-serif;
+        font-family: 'Roboto', sans-serif;
         border-radius: 4px;
         text-transform: uppercase;
         margin-right: 8px;
@@ -91,7 +87,7 @@
         border-bottom: 1px solid #444;
       }
       code {
-        font-family: "Fira Code", monospace;
+        font-family: 'Fira Code', monospace;
         padding: 0.2em 0.4em;
         margin: 0;
         font-size: 85%;
@@ -103,16 +99,13 @@
   <body>
     <p>
       This is an open source project. Please
-      <a href="https://github.com/diogotcorreia/proj2-fp-tester"
-        >contribute with tests</a
-      >.
+      <a href="https://github.com/diogotcorreia/proj2-fp-tester">contribute with tests</a>.
     </p>
     <p>We currently have tests for some TADs. Full test list below.</p>
     <div class="warning">
-      Due to the nature of the project, it's impossible to test all functions
-      independently.<br />
-      Some test failures might not be related to the function that's being
-      tested, but to another function used in the test.
+      Due to the nature of the project, it's impossible to test all functions independently.<br />
+      Some test failures might not be related to the function that's being tested, but to another
+      function used in the test.
     </div>
     <div class="content">
       <div>
@@ -126,9 +119,7 @@
           <input type="checkbox" id="skipMocks" checked />
           <label for="skipMocks">Skip abstraction tests</label>
         </div>
-        <span class="warning">
-          Do not move away from this tab while the tests are running.
-        </span>
+        <span class="warning"> Do not move away from this tab while the tests are running. </span>
         <p>
           Last ran: <span id="last-run"><i>never</i></span>
           <br />
@@ -155,17 +146,15 @@
     <div id="advanced-error-div" style="display: none">
       <h2>Advanced Error Analysis</h2>
       <p>
-        The following tests have failed. Click on each one to see the
-        corresponding source code.
+        The following tests have failed. Click on each one to see the corresponding source code.
       </p>
       <ul id="advanced-error-content"></ul>
     </div>
     <div>
       <h2>Full Tests List</h2>
       <p>
-        Below is a list of the functions that are being tested, along with how
-        many tests each function has and which functions that test also depends
-        on.
+        Below is a list of the functions that are being tested, along with how many tests each
+        function has and which functions that test also depends on.
       </p>
       <h4>TAD Posição</h4>
       <table>
@@ -230,9 +219,7 @@
           <td>Requires <code>posicao_para_str</code> to be working</td>
         </tr>
         <tr>
-          <td>
-            Abstração procedimental (<code>obter_posicoes_adjacentes</code>)
-          </td>
+          <td>Abstração procedimental (<code>obter_posicoes_adjacentes</code>)</td>
           <td>9</td>
           <td></td>
         </tr>
@@ -316,8 +303,8 @@
           <td><code>obter_peca</code></td>
           <td>5 * 9 = 45</td>
           <td>
-            Requires <code>tuplo_para_tabuleiro</code>,
-            <code>cria_posicao</code> and <code>peca_para_inteiro</code>
+            Requires <code>tuplo_para_tabuleiro</code>, <code>cria_posicao</code> and
+            <code>peca_para_inteiro</code>
             to be working
           </td>
         </tr>
@@ -345,8 +332,8 @@
           <td><code>obter_vetor</code></td>
           <td>5 * 6 = 30</td>
           <td>
-            Requires <code>tuplo_para_tabuleiro</code> and
-            <code>peca_para_inteiro</code> to be working
+            Requires <code>tuplo_para_tabuleiro</code> and <code>peca_para_inteiro</code> to be
+            working
           </td>
         </tr>
         <tr>
@@ -358,59 +345,57 @@
           <td><code>eh_posicao_livre</code></td>
           <td>5 * 9 = 45</td>
           <td>
-            Requires <code>tuplo_para_tabuleiro</code> and
-            <code>cria_posicao</code> to be working
+            Requires <code>tuplo_para_tabuleiro</code> and <code>cria_posicao</code> to be working
           </td>
         </tr>
         <tr>
           <td><code>coloca_peca</code></td>
           <td>1</td>
           <td>
-            Requires <code>cria_tabuleiro</code>, <code>cria_peca</code>,
-            <code>obter_peca</code>, <code>pecas_iguais</code> and
-            <code>cria_posicao</code> to be working
+            Requires <code>cria_tabuleiro</code>, <code>cria_peca</code>, <code>obter_peca</code>,
+            <code>pecas_iguais</code> and <code>cria_posicao</code> to be working
           </td>
         </tr>
         <tr>
           <td><code>move_peca</code></td>
           <td>2</td>
           <td>
-            Requires <code>tuplo_para_tabuleiro</code>,
-            <code>pecas_iguais</code>, <code>obter_peca</code>,
-            <code>cria_peca</code> and <code>cria_posicao</code> to be working
+            Requires <code>tuplo_para_tabuleiro</code>, <code>pecas_iguais</code>,
+            <code>obter_peca</code>, <code>cria_peca</code> and <code>cria_posicao</code> to be
+            working
           </td>
         </tr>
         <tr>
           <td><code>remove_peca</code></td>
           <td>1</td>
           <td>
-            Requires <code>tuplo_para_tabuleiro</code>,
-            <code>pecas_iguais</code>, <code>obter_peca</code>,
-            <code>cria_peca</code> and <code>cria_posicao</code> to be working
+            Requires <code>tuplo_para_tabuleiro</code>, <code>pecas_iguais</code>,
+            <code>obter_peca</code>, <code>cria_peca</code> and <code>cria_posicao</code> to be
+            working
           </td>
         </tr>
         <tr>
           <td><code>obter_ganhador</code></td>
           <td>5</td>
           <td>
-            Requires <code>tuplo_para_tabuleiro</code> and
-            <code>peca_para_inteiro</code> to be working
+            Requires <code>tuplo_para_tabuleiro</code> and <code>peca_para_inteiro</code> to be
+            working
           </td>
         </tr>
         <tr>
           <td><code>obter_posicoes_livres</code></td>
           <td>5</td>
           <td>
-            Requires <code>tuplo_para_tabuleiro</code> and
-            <code>posicao_para_str</code> to be working
+            Requires <code>tuplo_para_tabuleiro</code> and <code>posicao_para_str</code> to be
+            working
           </td>
         </tr>
         <tr>
           <td><code>obter_posicoes_jogador</code></td>
           <td>5 * 2 = 10</td>
           <td>
-            Requires <code>tuplo_para_tabuleiro</code> and
-            <code>posicao_para_str</code> to be working
+            Requires <code>tuplo_para_tabuleiro</code> and <code>posicao_para_str</code> to be
+            working
           </td>
         </tr>
       </table>
@@ -425,44 +410,39 @@
           <td><code>escolher_posicao_manual</code> (tests for failure)</td>
           <td>25</td>
           <td>
-            Requires <code>tuplo_para_tabuleiro</code> and
-            <code>cria_peca</code> to be working
+            Requires <code>tuplo_para_tabuleiro</code> and <code>cria_peca</code> to be working
           </td>
         </tr>
         <tr>
           <td><code>escolher_posicao_manual</code> (tests for success)</td>
           <td>14</td>
           <td>
-            Requires <code>tuplo_para_tabuleiro</code>,
-            <code>cria_peca</code> and <code>posicao_para_str</code> to be
-            working
+            Requires <code>tuplo_para_tabuleiro</code>, <code>cria_peca</code> and
+            <code>posicao_para_str</code> to be working
           </td>
         </tr>
         <tr>
           <td><code>escolher_posicao_auto</code> (facil)</td>
           <td>11</td>
           <td>
-            Requires <code>tuplo_para_tabuleiro</code>,
-            <code>cria_peca</code> and <code>posicao_para_str</code> to be
-            working
+            Requires <code>tuplo_para_tabuleiro</code>, <code>cria_peca</code> and
+            <code>posicao_para_str</code> to be working
           </td>
         </tr>
         <tr>
           <td><code>escolher_posicao_auto</code> (normal)</td>
           <td>15</td>
           <td>
-            Requires <code>tuplo_para_tabuleiro</code>,
-            <code>cria_peca</code> and <code>posicao_para_str</code> to be
-            working
+            Requires <code>tuplo_para_tabuleiro</code>, <code>cria_peca</code> and
+            <code>posicao_para_str</code> to be working
           </td>
         </tr>
         <tr>
           <td><code>escolher_posicao_auto</code> (dificil)</td>
           <td>14</td>
           <td>
-            Requires <code>tuplo_para_tabuleiro</code>,
-            <code>cria_peca</code> and <code>posicao_para_str</code> to be
-            working
+            Requires <code>tuplo_para_tabuleiro</code>, <code>cria_peca</code> and
+            <code>posicao_para_str</code> to be working
           </td>
         </tr>
         <tr>
@@ -471,25 +451,19 @@
           <td></td>
         </tr>
         <tr>
-          <td>
-            Abstração Procedimental Posição (<code>escolher_posicao_auto</code>)
-          </td>
+          <td>Abstração Procedimental Posição (<code>escolher_posicao_auto</code>)</td>
           <td>11 + 15 + 14 = 40</td>
           <td>
-            Requires <code>tuplo_para_tabuleiro</code>,
-            <code>cria_peca</code> and <code>posicao_para_str</code> to be
-            working
+            Requires <code>tuplo_para_tabuleiro</code>, <code>cria_peca</code> and
+            <code>posicao_para_str</code> to be working
           </td>
         </tr>
         <tr>
-          <td>
-            Abstração Procedimental Peça (<code>escolher_posicao_auto</code>)
-          </td>
+          <td>Abstração Procedimental Peça (<code>escolher_posicao_auto</code>)</td>
           <td>11 + 15 + 14 = 40</td>
           <td>
-            Requires <code>tuplo_para_tabuleiro</code>,
-            <code>cria_peca</code> and <code>posicao_para_str</code> to be
-            working
+            Requires <code>tuplo_para_tabuleiro</code>, <code>cria_peca</code> and
+            <code>posicao_para_str</code> to be working
           </td>
         </tr>
       </table>
@@ -499,7 +473,7 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
       const TEST_FILE_LINK =
-        "https://github.com/diogotcorreia/proj2-fp-tester/blob/master/tests/test.py";
+        'https://github.com/diogotcorreia/proj2-fp-tester/blob/master/tests/test.py';
       const ERROR_REGEX = /File ".+\/tests\/test.py", line (\d+), in (\w+)/g;
       const FUNCTION_REGEX = /^def (\w+)\([\w,* ]+\):/;
       const WHITE_SPACE = /^\s/;
@@ -507,20 +481,20 @@
       const FUNCTION_LENGTH_LIMIT = 30;
 
       const handleAdvancedErrorHandling = (output) => {
-        const advancedDiv = document.getElementById("advanced-error-div");
+        const advancedDiv = document.getElementById('advanced-error-div');
         const matches = [...output.matchAll(ERROR_REGEX)];
         if (matches.length == 0) {
-          advancedDiv.style.display = "none";
+          advancedDiv.style.display = 'none';
           return;
         }
-        advancedDiv.style.display = "block";
-        const content = document.getElementById("advanced-error-content");
+        advancedDiv.style.display = 'block';
+        const content = document.getElementById('advanced-error-content');
         content.innerHTML = matches
           .map(
             ([, line, testName]) =>
               `<li><a href="${TEST_FILE_LINK}#L${line}" target="_blank">${testName}</a></li>`
           )
-          .join("");
+          .join('');
       };
 
       const getFunctionsSize = (lines) => {
@@ -534,61 +508,54 @@
             functions[currentFunction] = 0;
             return;
           }
-          if (currentFunction && WHITE_SPACE.test(v))
-            functions[currentFunction]++;
+          if (currentFunction && WHITE_SPACE.test(v)) functions[currentFunction]++;
         });
         return functions;
       };
 
-      const result = document.getElementById("result");
-      const submit = document.getElementById("submit");
-      const killBtn = document.getElementById("kill");
-      const skipMocks = document.getElementById("skipMocks");
+      const result = document.getElementById('result');
+      const submit = document.getElementById('submit');
+      const killBtn = document.getElementById('kill');
+      const skipMocks = document.getElementById('skipMocks');
 
       const socket = io();
 
       killBtn.onclick = async () => {
-        socket.emit("kill");
+        socket.emit('kill');
       };
 
-      socket.on("connect", () => (submit.style.display = "inline-block"));
+      socket.on('connect', () => (submit.style.display = 'inline-block'));
 
       submit.onclick = async () => {
-        const content = document.getElementById("code").value;
+        const content = document.getElementById('code').value;
 
-        socket.emit("submit", content, skipMocks.checked);
-        submit.style.display = "none";
-        killBtn.style.display = "inline-block";
+        socket.emit('submit', content, skipMocks.checked);
+        submit.style.display = 'none';
+        killBtn.style.display = 'inline-block';
 
-        const lastrun = document.getElementById("last-run");
+        const lastrun = document.getElementById('last-run');
         lastrun.innerText = new Date().toLocaleString();
         const warnings = [];
 
         // Non ASCII test
-        const nonAsciiCharacters = new Set(
-          [...content].filter((c) => c.charCodeAt(0) > 128)
-        );
+        const nonAsciiCharacters = new Set([...content].filter((c) => c.charCodeAt(0) > 128));
         if (nonAsciiCharacters.size > 0)
           warnings.push(
-            `You're using non-ASCII characters in your code: ${[
-              ...nonAsciiCharacters,
-            ].join(" ")}`
+            `You're using non-ASCII characters in your code: ${[...nonAsciiCharacters].join(' ')}`
           );
 
         // Column width test
         const longLines = content
-          .split("\n")
+          .split('\n')
           .map((v, i) => (v.length > 80 ? i + 1 : -1))
           .filter((v) => v != -1);
         if (longLines.length > 0)
           warnings.push(
-            `You have the following lines going over 80 columns: ${longLines.join(
-              ", "
-            )}`
+            `You have the following lines going over 80 columns: ${longLines.join(', ')}`
           );
 
         // Function length test
-        functionsSize = getFunctionsSize(content.split("\n"));
+        functionsSize = getFunctionsSize(content.split('\n'));
         Object.keys(functionsSize).forEach((fn) => {
           lines = functionsSize[fn];
           if (lines <= FUNCTION_LENGTH_LIMIT) return;
@@ -597,28 +564,25 @@
           );
         });
 
-        if (TRY_EXCEPT.test(content))
-          warnings.push("The use of try/except is a bad practice.");
+        if (TRY_EXCEPT.test(content)) warnings.push('The use of try/except is a bad practice.');
 
-        document.getElementById("ascii-alert").innerHTML = warnings.join(
-          "<br/>"
-        );
+        document.getElementById('ascii-alert').innerHTML = warnings.join('<br/>');
       };
 
-      socket.on("clear", () => {
-        result.innerText = "";
+      socket.on('clear', () => {
+        result.innerText = '';
       });
 
-      socket.on("result", (data) => {
+      socket.on('result', (data) => {
         result.innerText += data;
         hljs.highlightBlock(result);
       });
 
-      socket.on("done", () => {
+      socket.on('done', () => {
         hljs.highlightBlock(result);
         handleAdvancedErrorHandling(result.innerText);
-        killBtn.style.display = "none";
-        submit.style.display = "inline-block";
+        killBtn.style.display = 'none';
+        submit.style.display = 'inline-block';
       });
     </script>
   </body>
