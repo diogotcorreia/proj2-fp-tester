@@ -94,7 +94,7 @@ tabMocks = (
     lambda x, y: x.barfoo(Piece(' '), posicaoMocks[6](y)),
     lambda x, y, z: x._foo(posicaoMocks[6](y), posicaoMocks[6](z)),
     lambda x: type(x) == Board,
-    lambda x, y: posicaoMocks[5](Piece(' '), x.bar(posicaoMocks[6](y))),
+    lambda x, y: pecaMocks[3](Piece(' '), x.bar(posicaoMocks[6](y))),
     lambda x, y: type(x) == type(y) == Board and x._bar(y),
     lambda x: x._foobar(),
     lambda x: Board(_foobar(x[0][0]), _foobar(x[0][1]), _foobar(x[0][2]), _foobar(x[1][0]), _foobar(
