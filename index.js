@@ -9,6 +9,7 @@ app.get('/', (_req, res) => res.sendFile(path.join(__dirname, 'index.html')));
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
 const timeout = 120;
+const PYTHON_PATH = process.env.PYTHON_PATH || 'python3';
 
 let queue = [];
 let sockets = {};
@@ -72,7 +73,7 @@ const processTests = (s) => {
     }\n\n`
   );
 
-  child = spawn('python3.5', [
+  child = spawn(PYTHON_PATH, [
     '-u',
     path.join(__dirname, 'tests', 'test.py'),
     sockets[s.id]['skipMocks'] ? 'False' : 'True',
