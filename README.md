@@ -6,11 +6,15 @@ without any knowledge on unit testing.
 
 ## How to setup
 
-1. Make sure you have NodeJS, Yarn and Python 3.5 (edit version in `index.js` if you want to use another version).
-2. Install dependencies with `yarn install` (or just `yarn`).
-3. Run the server with `yarn start` (production) or `yarn dev` (development).
-4. Go to `localhost:5000` (or the port you specified in the `PORT` env variable).
-5. Paste your code and see the tests running.
+(if using Windows, execute the following commands through Git Bash)
+
+1. Make sure you have Git, NodeJS, Yarn (optional) and Python (v3.5 is recommended for this project).
+2. Clone the repository with `git clone https://github.com/diogotcorreia/proj2-fp-tester.git`
+3. Install dependencies with `yarn install` (or just `yarn`). If you don't have yarn, you can also do `npm i`.
+4. Run the server with `yarn start` (production) or `yarn dev` (development). If you don't have yarn, you can also do `npm run start` or `npm run dev`.
+5. Navigate to `localhost:5000` on your browser (or the port you specified in the `PORT` env variable).
+6. If you want to use another Python version, set the `PYTHON_PATH` env variable, like `PYTHON_PATH=python3.5 yarn dev`.
+7. Paste your code and see the tests running.
 
 ## Contributing
 
