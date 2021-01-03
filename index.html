@@ -479,6 +479,7 @@
       const WHITE_SPACE = /^\s/;
       const TRY_EXCEPT = /[\s\n]try:/;
       const FUNCTION_LENGTH_LIMIT = 30;
+      let highlightTimeout;
 
       const handleAdvancedErrorHandling = (output) => {
         const advancedDiv = document.getElementById('advanced-error-div');
@@ -573,13 +574,18 @@
         result.innerText = '';
       });
 
+      const handleHighlight = () => {
+        if (highlightTimeout) clearTimeout(highlightTimeout);
+        highlightTimeout = setTimeout(() => hljs.highlightBlock(result), 500);
+      };
+
       socket.on('result', (data) => {
         result.innerText += data;
-        hljs.highlightBlock(result);
+        handleHighlight();
       });
 
       socket.on('done', () => {
-        hljs.highlightBlock(result);
+        handleHighlight();
         handleAdvancedErrorHandling(result.innerText);
         killBtn.style.display = 'none';
         submit.style.display = 'inline-block';
