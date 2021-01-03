@@ -11,9 +11,25 @@ target_spec = importlib.util.spec_from_loader('target', loader=None)
 target = importlib.util.module_from_spec(target_spec)
 exec(sys.stdin.read(), target.__dict__)
 
+last_print = None
+
+
+def print_da_feira(*args, mock_only=False, last=False):
+    global last_print
+    if not mock_only or (mock_only and getattr(target, '__mock')):
+        if last:
+            last_print = args
+        else:
+            print(*args, file=sys.__stdout__)
+
+
+setattr(target, 'print_da_feira', print_da_feira)
+setattr(target, '__mock', False)
+
 
 def enable_mocks(target, fn_names, functions):
     restore = []
+    setattr(target, '__mock', True)
     for (fn_name, fn) in zip(fn_names, functions):
         try:  # ignore undefined functions
             old_fn = getattr(target, fn_name)
@@ -25,6 +41,7 @@ def enable_mocks(target, fn_names, functions):
 
 
 def restore_mocks(target, restore):
+    setattr(target, '__mock', False)
     for (fn_name, fn) in restore:
         setattr(target, fn_name, fn)
 
@@ -33,6 +50,10 @@ class TestTADPosicao(unittest.TestCase):
 
     def setUp(self):
         self.positions = tuple((x, y) for x in 'abc' for y in '123')
+
+    def tearDown(self):
+        if last_print:
+            print(*last_print, file=sys.__stdout__)
 
     def test_cria_posicao_fail(self):
         """
@@ -173,6 +194,10 @@ class TestTADPeca(unittest.TestCase):
         self.pieces = list('XO ')
         self.invalid_pieces = (True, False, 4, 1.45, 'x', 'o', '\t', '\u200B', {
                                'foo': 'bar'}, ['foo', 'bar'], ('foo', 'bar'))
+
+    def tearDown(self):
+        if last_print:
+            print(*last_print, file=sys.__stdout__)
 
     def test_cria_peca_fail(self):
         """
@@ -360,6 +385,10 @@ class TestTADTabuleiro(unittest.TestCase):
         )
 
         self.vectors = ['a', 'b', 'c', '1', '2', '3']
+
+    def tearDown(self):
+        if last_print:
+            print(*last_print, file=sys.__stdout__)
 
     def test_cria_tabuleiro(self):
         """
@@ -773,6 +802,10 @@ class TestFuncoesAdicionais(unittest.TestCase):
 
         self.maxDiff = None
 
+    def tearDown(self):
+        if last_print:
+            print(*last_print, file=sys.__stdout__)
+
     def test_obter_movimento_manual_fail(self):
         """
         Testa obter_movimento_manual com inputs inválidos
@@ -967,6 +1000,10 @@ class TestFuncoesAdicionais(unittest.TestCase):
 
 
 class TestsEnunciado(unittest.TestCase):
+    def tearDown(self):
+        if last_print:
+            print(*last_print, file=sys.__stdout__)
+
     def test_tabuleiro_para_str(self):
         """
         Str do tabuleiro vazio

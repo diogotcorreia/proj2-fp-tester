@@ -151,6 +151,37 @@
       <ul id="advanced-error-content"></ul>
     </div>
     <div>
+      <h2>Debugging da Feira</h2>
+      <p>
+        The test runner has a 'debug' function called <code>print_da_feira</code>, which will help
+        you debug your code, especially on abstraction tests. It prints to the output window on this
+        page.
+      </p>
+      <div>
+        <p>Options:</p>
+        <ul>
+          <li>
+            <code>mock_only</code> (default <code>False</code>) - Only prints on abstraction tests.
+          </li>
+          <li>
+            <code>last</code> (default <code>False</code>) - Only prints the last call to
+            <code>print_da_feira</code> on every test.
+          </li>
+        </ul>
+      </div>
+      <div>
+        <p>Examples:</p>
+        <pre>
+          <code class="language-python">
+          print_da_feira(tabuleiro, peca)
+          print_da_feira(tabuleiro, peca, mock_only=True)
+          print_da_feira(tabuleiro, peca, last=True)
+          print_da_feira(tabuleiro, peca, mock_only=True, last=True)
+        </code>
+      </pre>
+      </div>
+    </div>
+    <div>
       <h2>Full Tests List</h2>
       <p>
         Below is a list of the functions that are being tested, along with how many tests each
@@ -481,6 +512,8 @@
       const FUNCTION_LENGTH_LIMIT = 30;
       let highlightTimeout;
 
+      hljs.initHighlightingOnLoad();
+
       const handleAdvancedErrorHandling = (output) => {
         const advancedDiv = document.getElementById('advanced-error-div');
         const matches = [...output.matchAll(ERROR_REGEX)];
@@ -580,7 +613,7 @@
       };
 
       socket.on('result', (data) => {
-        result.innerText += data;
+        result.appendChild(document.createTextNode(data));
         handleHighlight();
       });
 
