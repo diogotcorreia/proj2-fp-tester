@@ -25,6 +25,9 @@ posicaoMocks = (
     lambda p: ''.join([p._foo, p._bar])
 )
 
+posicaoFnNames = ('cria_posicao', 'cria_copia_posicao', 'obter_pos_c',
+                  'obter_pos_l', 'eh_posicao', 'posicoes_iguais', 'posicao_para_str',)
+
 
 class Piece:
 
@@ -42,6 +45,9 @@ pecaMocks = (
     lambda j1, j2: type(j1) == type(j2) == Piece and j1.foo(j2),
     lambda j: ''.join([chr(91), j._foo, chr(93)])
 )
+
+pecaFnNames = ('cria_peca', 'cria_copia_peca', 'eh_peca',
+               'pecas_iguais', 'peca_para_str',)
 
 
 class Board:
@@ -100,3 +106,6 @@ tabMocks = (
     lambda x: Board(_foobar(x[0][0]), _foobar(x[0][1]), _foobar(x[0][2]), _foobar(x[1][0]), _foobar(
         x[1][1]), _foobar(x[1][2]), _foobar(x[2][0]), _foobar(x[2][1]), _foobar(x[2][2]))
 )
+
+tabFnNames = ('cria_tabuleiro', 'cria_copia_tabuleiro', 'obter_peca', 'obter_vetor', 'coloca_peca', 'remove_peca',
+              'move_peca', 'eh_tabuleiro', 'eh_posicao_livre', 'tabuleiros_iguais', 'tabuleiro_para_str', 'tuplo_para_tabuleiro')

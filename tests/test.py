@@ -13,6 +13,23 @@ target = importlib.util.module_from_spec(target_spec)
 exec(sys.stdin.read(), target.__dict__)
 
 
+def enable_mocks(target, fn_names, functions):
+    restore = []
+    for (fn_name, fn) in zip(fn_names, functions):
+        try:  # ignore undefined functions
+            old_fn = getattr(target, fn_name)
+            restore.append((fn_name, old_fn))
+            setattr(target, fn_name, fn)
+        except:
+            pass
+    return restore
+
+
+def restore_mocks(target, restore):
+    for (fn_name, fn) in restore:
+        setattr(target, fn_name, fn)
+
+
 class TestTADPosicao(unittest.TestCase):
 
     def setUp(self):
@@ -140,19 +157,16 @@ class TestTADPosicao(unittest.TestCase):
                 correct_result[i], result, 'Falhou na posicao ' + c + l)
 
     @unittest.skipUnless(ENABLE_MOCK_TESTING, "skipping mock tests")
-    @patch.object(target, 'cria_posicao', side_effect=abstraction_tests.posicaoMocks[0])
-    @patch.object(target, 'cria_copia_posicao', side_effect=abstraction_tests.posicaoMocks[1])
-    @patch.object(target, 'obter_pos_c', side_effect=abstraction_tests.posicaoMocks[2])
-    @patch.object(target, 'obter_pos_l', side_effect=abstraction_tests.posicaoMocks[3])
-    @patch.object(target, 'eh_posicao', side_effect=abstraction_tests.posicaoMocks[4])
-    @patch.object(target, 'posicoes_iguais', side_effect=abstraction_tests.posicaoMocks[5])
-    @patch.object(target, 'posicao_para_str', side_effect=abstraction_tests.posicaoMocks[6])
     def test_obter_posicoes_adjacentes_mock(self, *_):
         """
         Testa as barreiras de abstração do TAD Posição
         """
-
-        self.test_obter_posicoes_adjacentes()
+        __mocks = enable_mocks(
+            target, abstraction_tests.posicaoFnNames, abstraction_tests.posicaoMocks)
+        try:
+            self.test_obter_posicoes_adjacentes()
+        finally:
+            restore_mocks(target, __mocks)
 
 
 class TestTADPeca(unittest.TestCase):
@@ -252,20 +266,16 @@ class TestTADPeca(unittest.TestCase):
             self.assertEqual(result[i], target.peca_para_inteiro(p))
 
     @unittest.skipUnless(ENABLE_MOCK_TESTING, "skipping mock tests")
-    @patch.object(target, 'cria_peca', side_effect=abstraction_tests.pecaMocks[0])
-    @patch.object(target, 'cria_copia_peca', side_effect=abstraction_tests.pecaMocks[1])
-    @patch.object(target, 'eh_peca', side_effect=abstraction_tests.pecaMocks[2])
-    @patch.object(target, 'pecas_iguais', side_effect=abstraction_tests.pecaMocks[3])
-    @patch.object(target, 'peca_para_str', side_effect=abstraction_tests.pecaMocks[4])
     def test_peca_para_inteiro_mock(self, *_):
         """
         Testa as barreiras de abstração do TAD Peca
         """
-
-        # NOTE: Esta implementação de TAD foi criada de propósito para ser absurda,
-        #   copiar isto seria extremamente obvio e uma má decisão académica
-
-        self.test_peca_para_inteiro()
+        __mocks = enable_mocks(
+            target, abstraction_tests.pecaFnNames, abstraction_tests.pecaMocks)
+        try:
+            self.test_peca_para_inteiro()
+        finally:
+            restore_mocks(target, __mocks)
 
 
 class TestTADTabuleiro(unittest.TestCase):
@@ -585,60 +595,58 @@ class TestTADTabuleiro(unittest.TestCase):
                                        for x in pos_result), pos, msg="Input: {}, {}".format(board, player))
 
     @unittest.skipUnless(ENABLE_MOCK_TESTING, "skipping mock tests")
-    @patch.object(target, 'cria_posicao', side_effect=abstraction_tests.posicaoMocks[0])
-    @patch.object(target, 'cria_copia_posicao', side_effect=abstraction_tests.posicaoMocks[1])
-    @patch.object(target, 'obter_pos_c', side_effect=abstraction_tests.posicaoMocks[2])
-    @patch.object(target, 'obter_pos_l', side_effect=abstraction_tests.posicaoMocks[3])
-    @patch.object(target, 'eh_posicao', side_effect=abstraction_tests.posicaoMocks[4])
-    @patch.object(target, 'posicoes_iguais', side_effect=abstraction_tests.posicaoMocks[5])
-    @patch.object(target, 'posicao_para_str', side_effect=abstraction_tests.posicaoMocks[6])
     def test_abstracao_posicao_no_tabuleiro(self, *_):
         """
         Testa as barreiras de abstração do TAD tabuleiro em relação ao TAD posição
         """
-        self.test_cria_tabuleiro()
-        self.test_cria_copia_tabuleiro()
-        self.test_obter_peca()
-        self.test_eh_tabuleiro_success()
-        self.test_eh_tabuleiro_fail()
-        self.test_tabuleiros_iguais_success()
-        self.test_tabuleiros_iguais_fail()
-        self.test_obter_vetor()
-        self.test_tabuleiro_para_str()
-        self.test_eh_posicao_livre()
-        self.test_coloca_peca()
-        self.test_move_peca()
-        self.test_remove_peca()
-        self.test_obter_ganhador()
-        self.test_obter_posicoes_livres()
-        self.test_obter_posicoes_jogador()
+        __mocks = enable_mocks(
+            target, abstraction_tests.posicaoFnNames, abstraction_tests.posicaoMocks)
+        try:
+            self.test_cria_tabuleiro()
+            self.test_cria_copia_tabuleiro()
+            self.test_obter_peca()
+            self.test_eh_tabuleiro_success()
+            self.test_eh_tabuleiro_fail()
+            self.test_tabuleiros_iguais_success()
+            self.test_tabuleiros_iguais_fail()
+            self.test_obter_vetor()
+            self.test_tabuleiro_para_str()
+            self.test_eh_posicao_livre()
+            self.test_coloca_peca()
+            self.test_move_peca()
+            self.test_remove_peca()
+            self.test_obter_ganhador()
+            self.test_obter_posicoes_livres()
+            self.test_obter_posicoes_jogador()
+        finally:
+            restore_mocks(target, __mocks)
 
     @unittest.skipUnless(ENABLE_MOCK_TESTING, "skipping mock tests")
-    @patch.object(target, 'cria_peca', side_effect=abstraction_tests.pecaMocks[0])
-    @patch.object(target, 'cria_copia_peca', side_effect=abstraction_tests.pecaMocks[1])
-    @patch.object(target, 'eh_peca', side_effect=abstraction_tests.pecaMocks[2])
-    @patch.object(target, 'pecas_iguais', side_effect=abstraction_tests.pecaMocks[3])
-    @patch.object(target, 'peca_para_str', side_effect=abstraction_tests.pecaMocks[4])
     def test_abstracao_peca_no_tabuleiro(self, *_):
         """
         Testa as barreiras de abstração do TAD tabuleiro em relação ao TAD peca
         """
-        self.test_cria_tabuleiro()
-        self.test_cria_copia_tabuleiro()
-        self.test_obter_peca()
-        self.test_eh_tabuleiro_success()
-        self.test_eh_tabuleiro_fail()
-        self.test_tabuleiros_iguais_success()
-        self.test_tabuleiros_iguais_fail()
-        self.test_obter_vetor()
-        self.test_tabuleiro_para_str()
-        self.test_eh_posicao_livre()
-        self.test_coloca_peca()
-        self.test_move_peca()
-        self.test_remove_peca()
-        self.test_obter_ganhador()
-        self.test_obter_posicoes_livres()
-        self.test_obter_posicoes_jogador()
+        __mocks = enable_mocks(
+            target, abstraction_tests.pecaFnNames, abstraction_tests.pecaMocks)
+        try:
+            self.test_cria_tabuleiro()
+            self.test_cria_copia_tabuleiro()
+            self.test_obter_peca()
+            self.test_eh_tabuleiro_success()
+            self.test_eh_tabuleiro_fail()
+            self.test_tabuleiros_iguais_success()
+            self.test_tabuleiros_iguais_fail()
+            self.test_obter_vetor()
+            self.test_tabuleiro_para_str()
+            self.test_eh_posicao_livre()
+            self.test_coloca_peca()
+            self.test_move_peca()
+            self.test_remove_peca()
+            self.test_obter_ganhador()
+            self.test_obter_posicoes_livres()
+            self.test_obter_posicoes_jogador()
+        finally:
+            restore_mocks(target, __mocks)
 
 
 class TestFuncoesAdicionais(unittest.TestCase):
@@ -917,65 +925,46 @@ class TestFuncoesAdicionais(unittest.TestCase):
                     sys.stdin = sys.__stdin__
 
     @unittest.skipUnless(ENABLE_MOCK_TESTING, "skipping mock tests")
-    @patch.object(target, 'cria_posicao', side_effect=abstraction_tests.posicaoMocks[0])
-    @patch.object(target, 'cria_copia_posicao', side_effect=abstraction_tests.posicaoMocks[1])
-    @patch.object(target, 'obter_pos_c', side_effect=abstraction_tests.posicaoMocks[2])
-    @patch.object(target, 'obter_pos_l', side_effect=abstraction_tests.posicaoMocks[3])
-    @patch.object(target, 'eh_posicao', side_effect=abstraction_tests.posicaoMocks[4])
-    @patch.object(target, 'posicoes_iguais', side_effect=abstraction_tests.posicaoMocks[5])
-    @patch.object(target, 'posicao_para_str', side_effect=abstraction_tests.posicaoMocks[6])
     def test_abstracao_posicao_nas_adicionais(self, *_):
         """
         Testa as barreiras de abstração das funções adicionais em relação ao TAD posição
         """
-        self.test_obter_movimento_auto_facil()
-        self.test_obter_movimento_auto_normal()
-        self.test_obter_movimento_auto_dificil()
+        __mocks = enable_mocks(
+            target, abstraction_tests.posicaoFnNames, abstraction_tests.posicaoMocks)
+        try:
+            self.test_obter_movimento_auto_facil()
+            self.test_obter_movimento_auto_normal()
+            self.test_obter_movimento_auto_dificil()
+        finally:
+            restore_mocks(target, __mocks)
 
     @unittest.skipUnless(ENABLE_MOCK_TESTING, "skipping mock tests")
-    @patch.object(target, 'cria_peca', side_effect=abstraction_tests.pecaMocks[0])
-    @patch.object(target, 'cria_copia_peca', side_effect=abstraction_tests.pecaMocks[1])
-    @patch.object(target, 'eh_peca', side_effect=abstraction_tests.pecaMocks[2])
-    @patch.object(target, 'pecas_iguais', side_effect=abstraction_tests.pecaMocks[3])
-    @patch.object(target, 'peca_para_str', side_effect=abstraction_tests.pecaMocks[4])
     def test_abstracao_peca_nas_adicionais(self, *_):
         """
         Testa as barreiras de abstração das funções adicionais em relação ao TAD peca
         """
-        self.test_obter_movimento_auto_facil()
-        self.test_obter_movimento_auto_normal()
-        self.test_obter_movimento_auto_dificil()
+        __mocks = enable_mocks(
+            target, abstraction_tests.pecaFnNames, abstraction_tests.pecaMocks)
+        try:
+            self.test_obter_movimento_auto_facil()
+            self.test_obter_movimento_auto_normal()
+            self.test_obter_movimento_auto_dificil()
+        finally:
+            restore_mocks(target, __mocks)
 
     @unittest.skipUnless(ENABLE_MOCK_TESTING, "skipping mock tests")
-    @patch.object(target, 'cria_posicao', side_effect=abstraction_tests.posicaoMocks[0])
-    @patch.object(target, 'cria_copia_posicao', side_effect=abstraction_tests.posicaoMocks[1])
-    @patch.object(target, 'obter_pos_c', side_effect=abstraction_tests.posicaoMocks[2])
-    @patch.object(target, 'obter_pos_l', side_effect=abstraction_tests.posicaoMocks[3])
-    @patch.object(target, 'eh_posicao', side_effect=abstraction_tests.posicaoMocks[4])
-    @patch.object(target, 'posicoes_iguais', side_effect=abstraction_tests.posicaoMocks[5])
-    @patch.object(target, 'posicao_para_str', side_effect=abstraction_tests.posicaoMocks[6])
-    @patch.object(target, 'cria_peca', side_effect=abstraction_tests.pecaMocks[0])
-    @patch.object(target, 'cria_copia_peca', side_effect=abstraction_tests.pecaMocks[1])
-    @patch.object(target, 'eh_peca', side_effect=abstraction_tests.pecaMocks[2])
-    @patch.object(target, 'pecas_iguais', side_effect=abstraction_tests.pecaMocks[3])
-    @patch.object(target, 'peca_para_str', side_effect=abstraction_tests.pecaMocks[4])
-    @patch.object(target, 'cria_tabuleiro', side_effect=abstraction_tests.tabMocks[0])
-    @patch.object(target, 'cria_copia_tabuleiro', side_effect=abstraction_tests.tabMocks[1])
-    @patch.object(target, 'obter_peca', side_effect=abstraction_tests.tabMocks[2])
-    @patch.object(target, 'obter_vetor', side_effect=abstraction_tests.tabMocks[3])
-    @patch.object(target, 'coloca_peca', side_effect=abstraction_tests.tabMocks[4])
-    @patch.object(target, 'remove_peca', side_effect=abstraction_tests.tabMocks[5])
-    @patch.object(target, 'move_peca', side_effect=abstraction_tests.tabMocks[6])
-    @patch.object(target, 'eh_tabuleiro', side_effect=abstraction_tests.tabMocks[7])
-    @patch.object(target, 'eh_posicao_livre', side_effect=abstraction_tests.tabMocks[8])
-    @patch.object(target, 'tabuleiros_iguais', side_effect=abstraction_tests.tabMocks[9])
-    @patch.object(target, 'tabuleiro_para_str', side_effect=abstraction_tests.tabMocks[10])
-    @patch.object(target, 'tuplo_para_tabuleiro', side_effect=abstraction_tests.tabMocks[11])
     def test_abstracao_total_no_moinho(self, *_):
         """
         Testa as barreiras de abstração do tabuleiro, peça e posição na função moinho
         """
-        self.test_moinho()
+        __mocks = enable_mocks(target,
+                               (*abstraction_tests.posicaoFnNames, *
+                                abstraction_tests.pecaFnNames, *abstraction_tests.tabFnNames),
+                               (*abstraction_tests.posicaoMocks, *abstraction_tests.pecaMocks, *abstraction_tests.tabMocks))
+        try:
+            self.test_moinho()
+        finally:
+            restore_mocks(target, __mocks)
 
 
 class TestsEnunciado(unittest.TestCase):
